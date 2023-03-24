@@ -4,7 +4,7 @@ import { ptBR } from "date-fns/locale";
 export const getDateWithoutTZ: (date?: Date | string) => Date = (
   date = new Date()
 ) => {
-  const newDate = new Date(date).toISOString().split("T")[0];
+  const newDate = new Date(date).toISOString().replace("Z", "");
 
   return parseISO(newDate);
 };
