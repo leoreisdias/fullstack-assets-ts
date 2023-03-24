@@ -1,10 +1,13 @@
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-export const getDateWithoutTZ: (date?: Date | string) => Date = (
-  date = new Date()
-) => {
+export const getDateWithoutTZ: (
+  date?: Date | string,
+  options?: { zeroHour?: boolean }
+) => Date = (date = new Date(), options = {}) => {
   const newDate = new Date(date).toISOString().replace("Z", "");
+
+  if (options.zeroHour) return parseISO(newDate.split("T")[0]);
 
   return parseISO(newDate);
 };
