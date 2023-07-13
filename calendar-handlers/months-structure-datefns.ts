@@ -7,10 +7,20 @@ import {
   startOfWeek,
 } from "date-fns";
 
+export type MonthStructure = {
+  dateISO: string;
+  monthDay: number;
+  date: Date;
+  isToday: boolean;
+  isDayInMonth: boolean;
+  isDayInNextMonth: boolean;
+  isDayInPreviousMonth: boolean;
+};
+
 export const getMonthStructure = (
   currentMonth: number,
   currentYear: number
-) => {
+):MonthStructure[] => {
   const monthStart = startOfMonth(new Date(currentYear, currentMonth));
   const calendarSectionStart = startOfWeek(monthStart, { weekStartsOn: 0 });
 
