@@ -5,6 +5,7 @@ export class AppError extends Error {
     public readonly statusCode: number;
     public readonly payload?: any;
     public readonly stack?: string;
+    public readonly status?: number;
   
     constructor(message: string, statusCode = 400, payload?: any, error?: any) {
       super();
@@ -15,6 +16,7 @@ export class AppError extends Error {
       } else this.message = message;
   
       this.statusCode = statusCode;
+      this.status = statusCode;
       this.payload = payload;
       this.stack = error?.stack;
     }
