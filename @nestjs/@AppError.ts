@@ -1,26 +1,39 @@
 import { RpcException } from '@nestjs/microservices';
 
 export class AppError extends Error {
-    public readonly message: string;
-    public readonly statusCode: number;
-    public readonly payload?: any;
-    public readonly stack?: string;
-    public readonly status?: number;
-  
-    constructor(message: string, statusCode = 400, payload?: any, error?: any) {
-      super();
-  
-      if (message?.includes('prisma')) {
-        console.error(message);
-        this.message = 'Internal Server Error';
-      } else this.message = message;
-  
-      this.statusCode = statusCode;
-      this.status = statusCode;
-      this.payload = payload;
-      this.stack = error?.stack;
-    }
+  public readonly message: string;
+  public readonly statusCode: number;
+  public readonly payload?: any;
+  public readonly isSuccess: boolean;
+  public readonly stack?: string;
+  public readonly status?: number;
+
+  constructor(
+    message: string,
+    statusCode: HttpStatus,
+    {
+      error,
+      payload,
+    }: {
+      payload?: any;
+      error?: any;
+    },
+  ) {
+    super();
+
+    if (message?.includes('prisma')) {
+      console.error(message);
+      this.message = 'Internal Server Error';
+    } else this.message = message;
+
+    this.statusCode = statusCode;
+    this.status = statusCode;
+    this.payload = payload;
+    this.stack = error?.stack;
+    this.isSuccess = false;
   }
+}
+
   
 // FOR MICROSERVICES RESPONSES
 

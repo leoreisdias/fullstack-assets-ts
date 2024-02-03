@@ -15,17 +15,13 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
 
-    if (
-      exception?.status === 400 ||
-      exception?.status === 404 ||
-      exception?.status === 401
-    ) {
+    if (exception?.status === 401) {
       return super.catch(exception, host);
     }
 
     this.logger.warn(
-        `Warn at: ${request?.url} ${request?.params} ${request?.query}`,
-        exception?.stack,
+        `[APP_ERROR_AT]: ${request?.url} ${request?.params} ${request?.query}`,
+        exception?.stack || JSON.stringify(exception),
     );
   
     this.deadLetterService.create({
