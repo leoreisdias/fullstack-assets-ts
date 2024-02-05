@@ -11,10 +11,7 @@ export class AppError extends Error {
   constructor(
     message: string,
     statusCode: HttpStatus,
-    {
-      error,
-      payload,
-    }: {
+    extra?: {
       payload?: any;
       error?: any;
     },
@@ -28,8 +25,8 @@ export class AppError extends Error {
 
     this.statusCode = statusCode;
     this.status = statusCode;
-    this.payload = payload;
-    this.stack = error?.stack;
+    this.payload = extra?.payload;
+    this.stack = extra?.error?.stack;
     this.isSuccess = false;
   }
 }
