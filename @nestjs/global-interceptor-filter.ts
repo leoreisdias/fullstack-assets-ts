@@ -15,7 +15,10 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
 
-    if (exception?.status === 401) {
+    const whitelist = [401, 404, 403];
+    const statusCode = exception?.statusCode || exception?.status || 500;
+
+    if (whitelist.includes(statusCode)) {
       return super.catch(exception, host);
     }
 
