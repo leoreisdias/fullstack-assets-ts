@@ -15,7 +15,10 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
 
-    if (exception?.status === 401) {
+    const whitelist = [401, 404, 403];
+    const statusCode = exception?.statusCode || exception?.status || 500;
+
+    if (whitelist.includes(statusCode)) {
       return super.catch(exception, host);
     }
 
@@ -29,17 +32,10 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         headers: request?.headers,
         method: request?.method,
         url: request?.url,
-        error: exception,
-        /*
-        or
-        error:
-            exception?.stack ??
-            exception?.message ??
-            JSON.stringify(exception),
-        */
+        error: exception?.stack ?? exception?.message ?? JSON.stringify(exception),
         params: request?.params,
         query: request?.query,
-        user: request?.user?.user,
+        user: request?.user, // When using User Decorator for logged user data
         status: exception?.statusCode || exception?.status,
        // any other info...
     });
