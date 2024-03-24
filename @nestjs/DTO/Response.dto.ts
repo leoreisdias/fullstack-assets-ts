@@ -30,3 +30,26 @@ export class ResponseDto<T = any> {
 //     message: 'Something',
 //     payload: ''
 // });
+
+
+export class PaginatedResponseDto<T = any> extends ResponseDto<{
+  content: T[];
+  pageCount: number;
+}> {
+  constructor({
+    message,
+    payload,
+    statusCode,
+    isSuccess,
+  }: {
+    payload: {
+      content: T[];
+      pageCount: number;
+    };
+    message: string;
+    statusCode?: number;
+    isSuccess?: boolean;
+  }) {
+    super({ message, payload, statusCode, isSuccess });
+  }
+}

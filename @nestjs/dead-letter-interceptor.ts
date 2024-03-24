@@ -2,6 +2,18 @@ import { Catch, ArgumentsHost, Injectable, Logger } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { DeadLetterService } from 'src/modules/dead-letter/dead-letter.service';
 
+const handleErrorObj = (error: any) => {
+  return JSON.stringify(
+    {
+      stack: error?.stack,
+      message: error?.message,
+      full: JSON.stringify(error),
+    },
+    null,
+    2,
+  );
+};
+
 @Injectable()
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
@@ -32,7 +44,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         headers: request?.headers,
         method: request?.method,
         url: request?.url,
-        error: exception?.stack ?? exception?.message ?? JSON.stringify(exception),
+        error: handleErrorObj(exception),
         params: request?.params,
         query: request?.query,
         user: request?.user, // When using User Decorator for logged user data
