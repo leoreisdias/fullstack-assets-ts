@@ -9,7 +9,8 @@ export const fetcher = async <T = unknown>(
   input: RequestInfo,
   init: RequestInit | undefined = undefined,
 ) => {
-  // NEXT-AUTH SESSION EXAMPLE - You can adapt for a different token approach
+  // NOTE: NEXT-AUTH SESSION EXAMPLE - You can adapt to a different token approach
+  
   //let session: Session | null = null;
 
   //session = await auth();
@@ -19,7 +20,7 @@ export const fetcher = async <T = unknown>(
   
   // const baseUrl = process.env.BASE_URL; // Example, but I recommend an env variable approach
 
-  const headers = headers();
+  const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
   
   try{
     const res = await fetch(`${baseUrl}${input}`, {
@@ -81,7 +82,7 @@ export const sender = async <T = unknown>(
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   },
 ) => {
-  // NEXT AUTH USAGE: Adapt for your token logic
+  // NOTE: NEXT AUTH USAGE: Adapt for your token logic
   // let session: Session | null = null;
   
   // session = await auth();
@@ -92,7 +93,7 @@ export const sender = async <T = unknown>(
 
   const baseUrl = process.env.BASE_URL;
 
-  const headers = headers(); // Based on Jack Herrigton video - pending to try it
+  const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
   
   try {
     const response = axios<T>({
