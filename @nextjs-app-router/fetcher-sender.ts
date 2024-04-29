@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Session } from 'next-auth';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { auth } from '@/auth';
@@ -10,21 +10,24 @@ export const fetcher = async <T = unknown>(
   init: RequestInit | undefined = undefined,
 ) => {
   // NEXT-AUTH SESSION EXAMPLE - You can adapt for a different token approach
-  let session: Session | null = null;
+  //let session: Session | null = null;
 
-  session = await auth();
+  //session = await auth();
 
-  if (!session) session = await auth();
-  const token = session?.user.accessToken
+  //if (!session) session = await auth();
+  // const token = session?.user.accessToken
   
-  const baseUrl = process.env.BASE_URL; // Example, but I recommend an env variable approach
+  // const baseUrl = process.env.BASE_URL; // Example, but I recommend an env variable approach
 
+  const headers = headers();
+  
   try{
     const res = await fetch(`${baseUrl}${input}`, {
       ...init,
       headers: {
+        ...headers,
         ...(init?.headers ?? {}),
-        Authorization: `Bearer ${token}`,
+       // Authorization: `Bearer ${token}`,
       },
     });
 
@@ -79,23 +82,26 @@ export const sender = async <T = unknown>(
   },
 ) => {
   // NEXT AUTH USAGE: Adapt for your token logic
-  let session: Session | null = null;
+  // let session: Session | null = null;
   
-  session = await auth();
+  // session = await auth();
   
-  if (!session) session = await auth();
+  // if (!session) session = await auth();
   
   const cookieStore = cookies();
 
   const baseUrl = process.env.BASE_URL;
 
+  const headers = headers(); // Based on Jack Herrigton video - pending to try it
+  
   try {
     const response = axios<T>({
       ...config,
       baseURL: baseUrl,
       headers: {
+        ...headers,
         ...(config.headers ?? {}),
-        Authorization: `Bearer ${session?.user.accessToken}`,
+        // Authorization: `Bearer ${session?.user.accessToken}`,
       },
       params: {
         ...config.params,
