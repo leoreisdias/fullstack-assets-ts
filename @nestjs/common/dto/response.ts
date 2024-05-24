@@ -10,7 +10,7 @@ export class ResponseDto<T = any> {
     message,
     payload,
     statusCode,
-    isSuccess
+    isSuccess,
   }: {
     payload: T;
     message: string;
@@ -24,13 +24,11 @@ export class ResponseDto<T = any> {
   }
 }
 
-
 // NOTE: USAGE EXAMPLE:
 // return new ResponseDto({
 //     message: 'Something',
 //     payload: ''
 // });
-
 
 export class PaginatedResponseDto<T = any> extends ResponseDto<{
   content: T[];

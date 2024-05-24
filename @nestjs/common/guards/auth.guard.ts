@@ -5,18 +5,20 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserDto } from '../dtos';
-import { AppError } from '../errors';
+import { AppError } from '../exceptions/appError';
+import { JwtService } from '@nestjs/jwt';
+import { jwtConstants } from '../constants/jwtConstant';
+import { UserDto } from 'types/user.dto';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private readonly jwtService: JwtService, // install @nestjs/jwt
+    private readonly jwtService: JwtService,
   ) {}
 
-  validateRoles(roles: string[], userRoles: string[]) {
-    const hasRole = userRoles.some((role) => roles.includes(role));
+  validateRoles(roles: string[], userRole: string) {
+    const hasRole = roles.includes(userRole);
 
     if (!hasRole) {
       throw new AppError('Unauthorized', HttpStatus.UNAUTHORIZED);
@@ -51,7 +53,7 @@ export class AuthGuard implements CanActivate {
 
       if (roles.length > 0) {
         const user = payload.user as UserDto;
-        this.validateRoles(roles, user?.type);
+        this.validateRoles(roles, user?.activeProfile?.role);
       }
 
       return true;
@@ -60,14 +62,3 @@ export class AuthGuard implements CanActivate {
     }
   }
 }
-
-
-/* -> app.module.ts
-Import JwtModule in your AppModule:
-
- JwtModule.register({
-    global: true,
-    secret: jwtConstants.secret,
-    signOptions: { expiresIn: '30d' },
-  }),
-*/
