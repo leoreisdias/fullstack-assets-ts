@@ -1,7 +1,7 @@
 "use client";
 // Font: https://github.com/vercel/next.js/discussions/54075
 
-import { debounce } from "@/utils/functions/debounce";
+import { debounce } from "./debounce";
 import { useRouter, usePathname } from "next/navigation";
 import { useCallback, useEffect } from "react";
 
@@ -17,7 +17,7 @@ interface DataRevalidatorProps {
   revalidateInterval?: number;
 }
 
-export function DataRevalidator({ timeout = 5000, revalidateInterval }: DataRevalidatorProps): null {
+export function DataRevalidator({ timeout = 2000, revalidateInterval }: DataRevalidatorProps): null {
   const router = useRouter();
   const pathname = usePathname();
 
