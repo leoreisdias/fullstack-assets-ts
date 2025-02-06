@@ -1,9 +1,15 @@
-import { INestApplication } from '@nestjs/common';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+/* 
+Arquivo criado para casos de microservices, uma forma de centralizar as 
+configurações de microservices, sua conexão, configurações de CORS, portas e nomes.
+E usado o `startAllMicroservices` para que seja possivel inicia-los tambem como HTTP server.
+*/
+
+import { INestApplication } from "@nestjs/common";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 
 function getMicroserviceBaseUrl(serviceName: string) {
-  const appBaseUrl = process.env[serviceName] || '';
-  const baseUrl = appBaseUrl.split(':');
+  const appBaseUrl = process.env[serviceName] || "";
+  const baseUrl = appBaseUrl.split(":");
 
   const host = baseUrl[0];
   const port = +baseUrl[1];
@@ -16,19 +22,16 @@ function getMicroserviceBaseUrl(serviceName: string) {
 
 export async function handleAppConfigs(
   app: INestApplication,
-  microserviceName: string,
+  microserviceName: string
 ) {
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://0.0.0.0:3000'
-    ],
+    origin: ["http://localhost:3000", "https://0.0.0.0:3000"],
     credentials: true,
   });
 
   // NOTE: If using Microservices
   const { host, port } = getMicroserviceBaseUrl(microserviceName);
-  console.log('handleAppConfigs:host', host, port);
+  console.log("handleAppConfigs:host", host, port);
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.TCP,
