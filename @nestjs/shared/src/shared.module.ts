@@ -4,7 +4,7 @@ export class SharedModule {
     return {
       module: SharedModule,
       imports: [
-        DatabaseModule,
+        PrismaModule,
         JwtModule.register({
           global: true,
           secret: jwtConstants.secret,

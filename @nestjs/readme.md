@@ -109,3 +109,11 @@ In your `tsconfig.json` add the path of the `shared` folder in `paths`:
 ### The `tsconfig.lib.json` file
 
 - Essential for the Nest CLI to be able to generate the files correctly and in the correct folder
+
+
+---
+---
+
+## Prisma $extend em Nest.js
+
+Na pasta `/shared/src/common/prisma`, há uma _service_ exemplificando como utilizar do **$extend** do Prisma no Nest.js.
