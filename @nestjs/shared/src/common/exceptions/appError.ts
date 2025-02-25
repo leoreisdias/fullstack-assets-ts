@@ -31,6 +31,33 @@ export class AppError extends Error {
   }
 }
 
+export class CatcherAppError extends Error {
+  public readonly message: string;
+  public readonly statusCode: number;
+  public readonly payload?: any;
+  public readonly isSuccess: boolean;
+  public readonly stack?: string;
+  public readonly status?: number;
+
+  constructor(error: any) {
+    super();
+
+    const message = error?.message;
+    const statusCode = error?.statusCode;
+
+    if (message?.includes('prisma')) {
+      console.error(message);
+      this.message = 'Internal Server Error';
+    } else this.message = message;
+
+    this.statusCode = statusCode;
+    this.status = statusCode;
+    this.payload = null;
+    this.stack = error?.stack;
+    this.isSuccess = false;
+  }
+}
+
 // FOR MICROSERVICES RESPONSES
 
 export interface IRpcException {
