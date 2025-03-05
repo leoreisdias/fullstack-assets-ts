@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { auth } from '@/auth';
 
-export const fetcher = async <T = unknown>(
+export const fetcher = async <T = unknown, W = TResponse<T>>(
   input: RequestInfo,
   init: RequestInit | undefined = undefined,
 ) => {
@@ -49,7 +49,7 @@ export const fetcher = async <T = unknown>(
     try {
       const data = await res.json();
 
-      return data as TResponse<T>;
+      return data as W;
     } catch (err) {
       console.error(
         'fetcher:url:',
@@ -77,7 +77,7 @@ export const fetcher = async <T = unknown>(
   }
 };
 
-export const sender = async <T = unknown>(
+export const sender = async <T = unknown, W = TResponse<T>>(
   config: AxiosRequestConfig & {
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   },
@@ -96,7 +96,7 @@ export const sender = async <T = unknown>(
   const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
   
   try {
-    const response = axios<T>({
+    const response = axios<W>({
       ...config,
       baseURL: baseUrl,
       headers: {
