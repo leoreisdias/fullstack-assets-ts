@@ -26,7 +26,8 @@ export class AppError extends Error {
     this.statusCode = statusCode;
     this.status = statusCode;
     this.payload = null;
-    this.stack = extra?.error?.stack;
+    this.stack =
+      extra?.error?.stack ?? JSON.stringify(extra?.error ?? { error: null });
     this.isSuccess = false;
   }
 }

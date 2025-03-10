@@ -1,0 +1,60 @@
+# DOCKERFILE FOR NESTJS APPLICATIONS - EVEN IF INSIDE A MICROSERVICE APPS MONOREPO STRUCTURE
+
+# Etapa de construção de dependências
+FROM node:18-alpine AS dependencies
+
+# Set HOME path
+ENV HOME=/home/app
+
+# Instale OpenSSL
+RUN apk add --no-cache openssl libssl3
+
+# Install pnpm
+RUN npm install -g pnpm
+# or
+# RUN npm install -g yarn
+
+# Create app directory
+WORKDIR $HOME/nodes
+
+# Copy entire project
+COPY . .
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+RUN pnpm prisma generate
+# or yarn...
+
+# Build the project
+RUN pnpm build cron-api
+# or yarn...
+
+# Etapa de construção da imagem final
+FROM node:18-alpine
+
+# Set HOME path
+ENV HOME=/home/app
+
+# Instale OpenSSL
+RUN apk add --no-cache openssl libssl3
+
+# Install pnpm
+RUN npm install -g pnpm
+# or yarn...
+
+# Create app directory
+WORKDIR $HOME/nodes
+
+# Copy necessary files from build stage
+COPY --from=dependencies /home/app/nodes/ .
+
+# Run with node user
+RUN chown -R node:node $HOME/nodes
+USER node
+
+# Set working directory to the specific app - Change <api-name> with the correct application name
+WORKDIR $HOME/nodes/dist/apps/<api-name>
+
+# or yarn..
+CMD ["pnpm", "migration:prod"]
+CMD ["node", "main"]
