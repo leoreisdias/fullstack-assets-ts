@@ -6,6 +6,10 @@ Mas para aqueles que querem o codigo completo, com intuito de aplicar um modulo 
 
 ---
 
+## Para Serviços Isolados
+
+Recomendo olhar e copiar o que for necessário, ou talvez a pasta `common` dentro de `shared/src` que contém arquivos que podem ser úteis para qualquer serviço.
+
 ## Como ter uma pasta Shared para Microservices ou Monorepo no Nest.js
 
 ### Introdução
@@ -79,6 +83,10 @@ Na pasta `/shared/src/common/prisma`, há uma _service_ exemplificando como util
 ---
 
 ## 🌏 ENGLISH VERSION
+
+## For Isolated Services
+
+I recommend looking at and copying what is necessary, or perhaps the `common` folder inside `shared/src` which contains files that may be useful for any service.
 
 ## How to have a Shared folder for Microservices or Monorepo in Nest.js
 
