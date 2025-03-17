@@ -5,7 +5,10 @@ import {
   isToday,
   startOfMonth,
   startOfWeek,
+  subMonths,
+  getDaysInMonth,
 } from "date-fns";
+import { getIndicator } from "./get-indicator";
 
 export type MonthStructure = {
   dateISO: string;
@@ -15,6 +18,9 @@ export type MonthStructure = {
   isDayInMonth: boolean;
   isDayInNextMonth: boolean;
   isDayInPreviousMonth: boolean;
+  daysInLastMonth: number;
+  daysInMonth: number;
+  indicator: number;
 };
 
 export const getMonthStructure = (
@@ -32,6 +38,14 @@ export const getMonthStructure = (
     end: calendarSectionEnd,
   });
 
+  const lastMonth = subMonths(
+    new Date(currentYear, currentMonth),
+    1
+  ).getMonth();
+
+  const daysInLastMonth = getDaysInMonth(new Date(currentYear, lastMonth));
+  const daysInMonth = getDaysInMonth(new Date(currentYear, currentMonth));
+
   const days = totalDaysInSection.map((date) => {
     const dateISO = date.toISOString();
     const dateMonth = date.getMonth();
@@ -41,8 +55,7 @@ export const getMonthStructure = (
     const isDayInPreviousMonth = dateMonth < currentMonth;
 
     const monthDay = date.getDate();
-
-    return {
+    const data = {
       dateISO,
       monthDay,
       date,
@@ -50,7 +63,14 @@ export const getMonthStructure = (
       isDayInMonth,
       isDayInNextMonth,
       isDayInPreviousMonth,
+      daysInLastMonth,
+      daysInMonth,
+      indicator: 0,
     };
+
+    const indicator = getIndicator(data);
+
+    return { ...data, indicator };
   });
 
   return days;

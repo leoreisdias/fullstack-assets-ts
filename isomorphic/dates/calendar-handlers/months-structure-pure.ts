@@ -1,3 +1,6 @@
+import { getIndicator } from "./get-indicator";
+import { MonthStructure } from "./months-structure-datefns";
+
 const WEEK_DAYS = 7;
 
 const getAmountToFulfillCalendar = (
@@ -9,33 +12,10 @@ const getAmountToFulfillCalendar = (
   return daysLeftInWeek === 0 ? 0 : WEEK_DAYS - daysLeftInWeek;
 };
 
-const getIndicator = (params: {
-  day: number;
-  isDayInMonth: boolean;
-  isDayInNextMonth: boolean;
-  isDayInPreviousMonth: boolean;
-  daysInLastMonth: number;
-  daysInMonth: number;
-}) => {
-  if (params.isDayInMonth) {
-    return params.day;
-  }
-
-  if (params.isDayInNextMonth) {
-    return params.day - params.daysInMonth;
-  }
-
-  if (params.isDayInPreviousMonth) {
-    return params.daysInLastMonth + params.day;
-  }
-
-  return params.day;
-};
-
 export const getMonthStructure = (
   currentMonth: number,
   currentYear: number
-) => {
+): MonthStructure[] => {
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
 
   const firstDayOfMonthWeekday = firstDayOfMonth.getDay();
@@ -65,24 +45,22 @@ export const getMonthStructure = (
     const today = new Date();
     const isToday = isDayInMonth && today.getDate() === day;
 
-    const monthDay = getIndicator({
-      day,
-      isDayInMonth,
-      isDayInNextMonth,
-      isDayInPreviousMonth,
-      daysInLastMonth,
-      daysInMonth,
-    });
-
-    return {
+    const data = {
       dateISO,
-      monthDay,
+      monthDay: day,
       date,
       isToday,
       isDayInMonth,
       isDayInNextMonth,
       isDayInPreviousMonth,
+      indicator: 0,
+      daysInLastMonth,
+      daysInMonth,
     };
+
+    const indicator = getIndicator(data);
+
+    return { ...data, indicator };
   });
 
   return days;

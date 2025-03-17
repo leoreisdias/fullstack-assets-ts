@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from "react";
 
-import { ModalDefault } from '@/components/_generics';
-import { useModal } from '@/components/_generics/Modals/Default/useModal';
+import { ModalDefault } from "@/components/_generics";
+import { useModal } from "@/components/_generics/Modals/Default/useModal";
 
-import { EventDetails } from './EventDetails';
-import * as S from './styles';
+import { EventDetails } from "./EventDetails";
+import * as S from "./styles";
 
 export type DayEvents = {
   id: string;
@@ -73,7 +73,7 @@ export const DayCalendar = ({
   ]);
 
   const events = useMemo(() => {
-    const dayEvents = monthEvents?.find(event => event.day === day);
+    const dayEvents = monthEvents?.find((event) => event.day === day);
 
     return {
       dayEvents: dayEvents ? dayEvents.events.slice(0, MAX_EVENTS_PER_DAY) : [],
@@ -90,7 +90,7 @@ export const DayCalendar = ({
         <S.DayIndicator outside={isDayInNextMonth || isDayInPreviousMonth}>
           {indicator}
         </S.DayIndicator>
-        {events.dayEvents.map(event => (
+        {events.dayEvents.map((event) => (
           <S.Event
             key={event.id}
             color={event.color}

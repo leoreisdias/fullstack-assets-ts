@@ -1,27 +1,17 @@
-import {
-  addHours,
-  addMonths,
-  format,
-  getDate,
-  getDay,
-  getDaysInMonth,
-  subMonths,
-} from "date-fns";
+import { addMonths, format, subMonths } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useEffect, useMemo, useState } from "react";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-
-import { useFetch } from "@/hooks/useFetch";
-import { IResponse } from "@/interfaces";
-import { ICalendarEvents } from "@/interfaces/entities/ICalendarEvents";
-import { getAllCalendarEvents } from "@/services/calendar";
-
-import { DayCalendar } from "./DayCalendar";
-import { getDaysToFulfillMonth } from "./functions/daysStructure";
-import { formatCalendarEvent } from "./functions/formatCalendarEvent";
+import { useMemo, useState } from "react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { isHeaderToday } from "./functions/isHeaderToday";
 import { MonthEvents } from "./mock";
-import * as S from "./styles";
+import { getMonthStructure } from "../../utils/months-structure-datefns";
+import { Flex, Grid } from "../../../styled-system/jsx";
+import { css } from "../../../styled-system/css";
+import { DayCalendar } from "./DayCalendar";
+
+const data = {
+  payload: MonthEvents,
+};
 
 export const MyCalendar = () => {
   const [currentMonthYear, setCurrentMonthYear] = useState({
@@ -58,60 +48,11 @@ export const MyCalendar = () => {
   };
 
   const MONTH_STRUCTURE = useMemo(() => {
-    const { currentMonth, currentYear } = currentMonthYear;
-
-    const dayOneWeekDay = getDay(new Date(currentYear, currentMonth, 1));
-    const daysInMonth = getDaysInMonth(new Date(currentYear, currentMonth));
-
-    const totalDaysInMonth = dayOneWeekDay + daysInMonth;
-
-    const totalCards =
-      totalDaysInMonth + getDaysToFulfillMonth(dayOneWeekDay, daysInMonth);
-
-    const lastMonth = subMonths(
-      new Date(currentYear, currentMonth),
-      1
-    ).getMonth();
-    const daysInLastMonth = getDaysInMonth(new Date(currentYear, lastMonth));
-
-    const days = Array.from({ length: totalCards }, (_, index) => {
-      const day = index - dayOneWeekDay + 1;
-      const isDayInMonth = day > 0 && day <= daysInMonth;
-      const isDayInNextMonth = day > daysInMonth;
-      const isDayInPreviousMonth = day <= 0;
-
-      const todayMonth = new Date().getMonth();
-
-      const isToday =
-        isDayInMonth &&
-        new Date().getDate() === day &&
-        todayMonth === currentMonth;
-
-      return {
-        day,
-        isToday,
-        isDayInMonth,
-        isDayInNextMonth,
-        isDayInPreviousMonth,
-        daysInLastMonth,
-        daysInMonth,
-      };
-    });
-
-    return days;
+    return getMonthStructure(
+      currentMonthYear.currentMonth,
+      currentMonthYear.currentYear
+    );
   }, [currentMonthYear]);
-
-  const { data, mutate } = useFetch<
-    IResponse<ICalendarEvents[]>,
-    IResponse,
-    ICalendarEvents[]
-  >(
-    `/app-service/calendar-events`,
-    {
-      revalidateOnFocus: true,
-    },
-    formatCalendarEvent
-  );
 
   return (
     <S.Container>
