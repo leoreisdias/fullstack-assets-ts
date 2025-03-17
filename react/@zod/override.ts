@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { ResourcesErrors } from '@/app/utils/contants/errors';
+import { ResourcesErrors } from "@/app/utils/contants/errors";
 
-z.setErrorMap(map => ({
+z.setErrorMap((map) => ({
   ...map,
   message: ResourcesErrors.requiredField, // In case of Internationalization
 }));

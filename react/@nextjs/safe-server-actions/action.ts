@@ -1,8 +1,8 @@
 // PURPOSE: VALIDATE BACKEND RESPONSES PATTERN ONCE THEY ARE RECEIVED
 // CHECK THE `example.action.ts` FILE FOR USAGE EXAMPLE
 
-import { createSafeActionClient } from 'next-safe-action';
-import { z } from 'zod';
+import { createSafeActionClient } from "next-safe-action";
+import { z } from "zod";
 
 export const action = createSafeActionClient();
 
