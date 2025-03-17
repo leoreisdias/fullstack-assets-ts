@@ -11,7 +11,7 @@ The repository is organized into three main directories:
 📌 Contains code that can be used in both **frontend (Next.js)** and **backend (NestJS)**.
 
 🔹 **[`isomorphic/dates/`](./isomorphic/dates/README.md)** → Handlers and utilities for date manipulation.
-🔹 **[`isomorphic/prisma-helpers/`](./isomorphic/prisma-helpers/README.md)** → Selectors and typings for Prisma usage in both front and back.
+🔹 **[`isomorphic/prisma-utils/`](./isomorphic/prisma-utils/README.md)** → Helpers and utilities for Prisma usage across frontend and backend.
 
 ---
 
@@ -33,6 +33,7 @@ The repository is organized into three main directories:
 🔹 **[`react/@nextjs/`](./react/@nextjs/README.md)** → Next.js-specific helpers.
 🔹 **[`react/@zod/`](./react/@zod/README.md)** → Helpers for Zod validation.
 🔹 **[`react/@CASL/`](./react/@CASL/README.md)** → CASL permission control implementation.
+🔹 **[`react/@utils/`](./react/@utils/README.md)** → General utilities for handling FormData and other common operations.
 
 ---
 
