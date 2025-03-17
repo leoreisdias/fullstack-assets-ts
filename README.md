@@ -1,4 +1,4 @@
-# 📖 Fullstack-Assets Repository Documentation
+# 📖 Fullstack-Assets Documentation
 
 This repository contains a collection of **reusable fullstack assets**, including **hooks, components, utilities, and structures** for **NestJS, Next.js, and isomorphic code**. The code here is not meant to be installed as a package but rather to be **copied and reused** as needed.
 
