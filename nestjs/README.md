@@ -25,6 +25,7 @@ This folder contains **NestJS-specific utilities** for both **standalone service
 For more details, refer to the individual READMEs:
 
 🔹 [Shared Module Documentation](./shared/README.md)
+
 🔹 [Infrastructure (Docker) Documentation](./infra/README.md)
 
 ---
@@ -66,6 +67,7 @@ Esta pasta contém **utilitários específicos do NestJS** para **serviços inde
 Para mais detalhes, consulte os READMEs individuais:
 
 🔹 [Documentação do Módulo Compartilhado](./shared/README.md)
+
 🔹 [Documentação de Infraestrutura (Docker)](./infra/README.md)
 
 ---

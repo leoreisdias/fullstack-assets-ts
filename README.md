@@ -11,6 +11,7 @@ The repository is organized into three main directories:
 📌 Contains code that can be used in both **frontend (Next.js)** and **backend (NestJS)**.
 
 🔹 **[`isomorphic/dates/`](./isomorphic/dates/README.md)** → Handlers and utilities for date manipulation.
+
 🔹 **[`isomorphic/prisma-utils/`](./isomorphic/prisma-utils/README.md)** → Helpers and utilities for Prisma usage across frontend and backend.
 
 ---
@@ -20,6 +21,7 @@ The repository is organized into three main directories:
 📌 Contains structure for **NestJS**, including a `shared/` module for monorepos or microservices.
 
 🔹 **[`nestjs/shared/`](./nestjs/shared/README.md)** → Reusable code for NestJS microservices (decorators, DTOs, guards, interceptors, etc.).
+
 🔹 **[`nestjs/infra/`](./nestjs/infra/README.md)** → Infrastructure configurations (e.g., Docker).
 
 ---
@@ -29,10 +31,15 @@ The repository is organized into three main directories:
 📌 Contains **hooks, components, and utilities** for **React and Next.js**.
 
 🔹 **[`react/@components/`](./react/@components/README.md)** → Reusable components (Advanced Filters, Big Calendar, etc.).
+
 🔹 **[`react/@hooks/`](./react/@hooks/README.md)** → Custom hooks for React (use-fetch, use-scroll-bottom, etc.).
+
 🔹 **[`react/@nextjs/`](./react/@nextjs/README.md)** → Next.js-specific helpers.
+
 🔹 **[`react/@zod/`](./react/@zod/README.md)** → Helpers for Zod validation.
+
 🔹 **[`react/@CASL/`](./react/@CASL/README.md)** → CASL permission control implementation.
+
 🔹 **[`react/@utils/`](./react/@utils/README.md)** → General utilities for handling FormData and other common operations.
 
 ---
