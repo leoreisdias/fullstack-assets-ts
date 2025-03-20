@@ -1,129 +1,124 @@
-import axios, { AxiosRequestConfig } from 'axios';
-import { Session } from 'next-auth';
-import { cookies, headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import axios, { AxiosRequestConfig } from "axios";
+import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { auth } from '@/auth';
+import { Result } from "./types/response";
+import { handleError } from "./errors/handleErrors";
 
-export const fetcher = async <T = unknown, W = TResponse<T>>(
+export const fetcher = async <T = unknown>(
   input: RequestInfo,
-  init: RequestInit | undefined = undefined,
+  init: RequestInit | undefined = undefined
 ) => {
   // NOTE: NEXT-AUTH SESSION EXAMPLE - You can adapt to a different token approach
-  
+
   //let session: Session | null = null;
 
   //session = await auth();
 
   //if (!session) session = await auth();
   // const token = session?.user.accessToken
-  
-  // const baseUrl = process.env.BASE_URL; // Example, but I recommend an env variable approach
+
+  const baseUrl = process.env.BASE_URL; // Example, but I recommend an env variable approach
 
   const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
-  
-  try{
-    const res = await fetch(`${baseUrl}${input}`, {
+
+  const res = await tryCatch<Response>(
+    fetch(`${baseUrl}${input}`, {
       ...init,
       headers: {
-        ...headers,
-        ...(init?.headers ?? {}),
-       // Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${apiToken}`,
+        ...init?.headers,
       },
-    });
+    })
+  );
 
-    if (!res.ok) {
-      console.error('fetcher:url:', input, 'init:', init, 'res:', res);
-      
-      if (res.status === 401) {
-        return redirect(`/sign-out`); // NextAuth Use Case: A custom page to call the server-action signOut from next-auth middleware - Adapt for your use case
-      }
+  if (!res.ok || !res.payload.ok) {
+    console.error("fetcher:url:", input, "init:", init, "res:", res);
 
-     return {
-        isSuccess: false,
-        message: 'An error occurred while fetching the data.',
-        payload: null,
-      } as TResponse<null>;
+    if (res.statusCode === 401) {
+      return redirect("/sign-out");
     }
+  }
 
-    try {
-      const data = await res.json();
+  try {
+    const data = await res.payload?.json();
 
-      return data as W;
-    } catch (err) {
-      console.error(
-        'fetcher:url:',
-        `${baseUrl}${input}`,
-        'init:',
-        init,
-        'res:',
-        res,
-        err,
-      );
-
-      return {
-        isSuccess: false,
-        message: 'An error occurred while fetching the data.',
-        payload: null,
-      } as TResponse<null>;
-    }
-  }catch(err){
-    console.error('fetcher:url:', `${baseUrl}${input}`, 'init:', init, err);
-    return {
-      isSuccess: false,
-      message: 'An error occurred while fetching the data.',
-      payload: null,
-    } as TResponse<null>;
+    return data as Result<T>;
+  } catch (err) {
+    console.error(
+      "fetcher:url:",
+      `${baseUrl}${input}`,
+      "init:",
+      init,
+      "res:",
+      res,
+      err
+    );
+    return handleError(err) as Result<T>;
   }
 };
 
-export const sender = async <T = unknown, W = TResponse<T>>(
+export const sender = async <T = unknown>(
   config: AxiosRequestConfig & {
-    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-  },
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  }
 ) => {
   // NOTE: NEXT AUTH USAGE: Adapt for your token logic
   // let session: Session | null = null;
-  
+
   // session = await auth();
-  
+
   // if (!session) session = await auth();
-  
+
   const cookieStore = cookies();
 
   const baseUrl = process.env.BASE_URL;
 
   const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
-  
-  try {
-    const response = axios<W>({
+
+  const response = await tryCatch<AxiosResponse<T>>(
+    axios({
       ...config,
+      responseType: config.responseType,
       baseURL: baseUrl,
       headers: {
-        ...headers,
-        ...(config.headers ?? {}),
-        // Authorization: `Bearer ${session?.user.accessToken}`,
+        ...config.headers,
+        // Authorization: `Bearer ${apiToken}`,
       },
-      params: {
-        ...config.params,
-        lang: cookieStore.get('NEXT_LOCALE')?.value, // If using Internationalization
-      },
-    });
+      params: config.params,
+      timeout: 60000,
+    })
+  );
+
+  if (!response.ok) {
+    if (response.statusCode === 401) {
+      // Handle unauthorized response by redirecting the user.
+      // Option 1: Redirect with internationalization support
+      // const cookiesStore = cookies();
+      // const locale = cookiesStore.get('NEXT_LOCALE');
+      // return redirect(`/${locale?.value || 'pt'}/sign-out`);
+
+      // Option 2: Simple redirect to the home page
+      // return redirect("/");
+      return redirect("/");
+    }
 
     return response;
-  } catch (err) {
-    if ((err as any)?.response?.status === 401) {
-      /* REDIRECT WITH INTERNATIONALIZATION
-      const cookiesStore = cookies();
-      const locale = cookiesStore.get('NEXT_LOCALE');
-
-      return redirect(`/${locale?.value || 'pt'}/sign-out`);
-
-      OR
-      */
-     return redirect('/');
-    }
-    
-    throw err;
   }
+
+  return {
+    ...response,
+    payload: response.payload?.data,
+  };
 };
+
+export async function tryCatch<T = Result, E = Error>(
+  promise: Promise<T>
+): Promise<Result<T, E>> {
+  try {
+    const data = await promise;
+    return { payload: data, error: null, ok: true, message: "" };
+  } catch (error) {
+    return handleError(error) as Result<T, E>;
+  }
+}
