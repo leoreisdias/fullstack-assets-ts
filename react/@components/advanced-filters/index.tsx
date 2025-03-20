@@ -27,7 +27,7 @@ import { Typography } from "@/app/components/Typography";
 import { useFetch } from "@/app/hooks/useFetch";
 import { createFilter, deleteFilter } from "@/app/lib/actions/filters.actions";
 import { ModulesEnum } from "@/app/types/enums/modules";
-import { TResponse } from "@/app/types/responses";
+import { Result } from "@/app/types/responses";
 import { MyFiltersUseCase } from "@/app/types/use-cases/my-filters";
 import { useTranslation } from "@/app/utils/i18n/client";
 import { zod } from "@/app/validations";
@@ -130,7 +130,7 @@ const MyFilters = ({
   const pathname = usePathname();
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useFetch<TResponse<MyFiltersUseCase[]>>(
+  const { data, isLoading } = useFetch<Result<MyFiltersUseCase[]>>(
     `/filters/my-filters/${module}`
   );
 
