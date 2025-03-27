@@ -5,10 +5,26 @@ import { redirect } from "next/navigation";
 import { Result } from "./types/response";
 import { handleError } from "./errors/handleErrors";
 
-export const fetcher = async <T = unknown>(
+type FetcherRequestInit<W> = RequestInit & {
+  fallbackData?: W;
+};
+
+export function fetcher<T = unknown>(
   input: RequestInfo,
-  init: RequestInit | undefined = undefined
-) => {
+  init: FetcherRequestInit<T> & { fallbackData: T }
+): Promise<T>;
+
+// Sobrecarga para quando o fallbackData não é fornecido (retorno padrão de erro TResponse<null>)
+
+export function fetcher<T = unknown>(
+  input: RequestInfo,
+  init?: FetcherRequestInit<T>
+): Promise<Result<null> | Result<T>>;
+
+export async function fetcher<T = unknown>(
+  input: RequestInfo,
+  init?: FetcherRequestInit<T>
+): Promise<Result<null> | Result<T>> {
   // NOTE: NEXT-AUTH SESSION EXAMPLE - You can adapt to a different token approach
 
   //let session: Session | null = null;
@@ -56,7 +72,7 @@ export const fetcher = async <T = unknown>(
     );
     return handleError(err) as Result<T>;
   }
-};
+}
 
 export const sender = async <T = unknown>(
   config: AxiosRequestConfig & {
