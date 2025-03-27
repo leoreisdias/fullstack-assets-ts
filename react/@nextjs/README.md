@@ -6,66 +6,52 @@ This folder contains **Next.js-specific utilities** to improve API handling, aut
 
 ### 🛰️ API Fetching & Sending
 
-- **`fetcher-sender.ts`** → A **unified way** to perform API requests in Next.js, ensuring **consistent error handling and response formatting** across the application. These utilities provide **easy type inference** through generics, making API calls simpler and safer.
+- **`fetcher-sender.ts`** → A **unified and structured way** to perform API requests in Next.js, ensuring **consistent error handling, automatic token injection, and response formatting** across the application.
+  - Uses **`fetcher`** for **fetch-based API calls** and **`sender`** for **axios-based API calls**.
+  - Implements a **universal error handling system** that sanitizes errors and prevents sensitive data leakage.
+  - Uses **`tryCatch`** as a generic wrapper for promises, allowing safe execution of async functions.
 
-**Example Use Case:**
+#### **Example Use Case:**
 
-- Securely fetching API data with automatic token injection.
-- Standardizing API responses and error handling across different services.
-- Making typed API calls with minimal setup.
+- Securely fetching API data while **automatically injecting authentication tokens**.
+- Standardizing API responses to ensure **consistent success/error formats**.
+- Making **typed API calls with minimal setup**, ensuring type safety across the application.
+- Using the **`sender`** for APIs that require **custom headers, query params, or timeouts**.
+
+---
 
 ### 🚨 Error Handling
 
-- **`errors/handleAPIError.ts`** → Centralized API error handler that standardizes API response errors.
+- **`errors/handleError.ts`** → A **centralized API error handler** that:
+  - Standardizes API response errors for **both `fetcher` and `sender`**.
+  - Prevents exposing **sensitive backend details** (e.g., Prisma, SQL, internal server stack traces).
+  - Returns **clean, user-friendly messages** while keeping logs for debugging.
 
-**Example Use Case:**
+#### **Example Use Case:**
 
-- Catching API errors and displaying user-friendly messages instead of raw error responses.
+- Catching API errors and displaying **controlled error messages** instead of exposing raw API failures.
+- Automatically filtering out errors containing **sensitive backend information**.
+
+---
 
 ### 🔀 Route Handlers
 
-- **`route-handlers/proxy-logic.ts`** → A server-side **proxy for acting as an API gateway**, allowing Next.js to securely relay requests to other services. This is useful when managing **multiple microservices**, whether they are inside a Kubernetes cluster or external services.
+- **`route-handlers/proxy-logic.ts`** → A **server-side API proxy**, allowing Next.js to relay requests to other services securely.
+  - Useful for **microservices architecture** or acting as an **API gateway**.
+  - Works **inside or outside a Kubernetes cluster**, making it ideal for managing multiple backend services.
 
-**Example Use Case:**
+#### **Example Use Case:**
 
-- Using Next.js as an API gateway to route authenticated requests to internal or external services without exposing API keys.
-- Fetching user data from an external API while keeping requests server-only.
-
-### 🔒 Safe Server Actions
-
-- **`safe-server-actions/action.ts`** → Wrapper for Next.js **server actions**, enforcing schema validation with Zod.
-- **`safe-server-actions/example.action.ts`** → Example implementation of a **safe server action** with API integration.
-
-**Example Use Case:**
-
-- Ensuring that user-submitted data matches the expected schema before processing.
-- Handling API requests securely within server actions.
-
-### 🏎️ Stale-While-Revalidate (SWR) Optimization
-
-- **`server-stale-while-revalidate/DateRevalidator.tsx`** → A utility that **simulates the stale-while-revalidate behavior** of **Tanstack Query**, but for **React Server Components**. It refreshes data when the user focuses on the page or at a set interval.
-- **`server-stale-while-revalidate/debounce.ts`** → A debouncing utility to optimize refresh events and API calls.
-
-**Example Use Case:**
-
-- Auto-refreshing API data when users return to the page, just like SWR does for client-side data fetching.
-- Preventing excessive re-fetching by debouncing calls and controlling revalidation frequency.
-
-### 📦 Types
-
-- **`types/response.ts`** → Standardized API response types, including **pagination structures** and success/error responses.
-
-**Example Use Case:**
-
-- Ensuring consistent API response structures across your application.
+- Using Next.js as an **API gateway** to forward requests to microservices while **hiding API keys and internal endpoints**.
+- Centralizing API requests under the Next.js backend to avoid **CORS issues and frontend exposure**.
 
 ---
 
 ## 🎯 Why These Utilities?
 
-- **Secure API handling** → Avoid exposing API keys and ensure authentication in API calls.
-- **Better error management** → Handle API errors globally for a smoother UX.
-- **Optimized data fetching** → Improve performance with SWR-like behaviors and debouncing.
-- **Standardized responses** → Keep API responses structured and predictable.
+✅ **Secure API handling** → Automatically injects authentication and ensures secure API calls.  
+✅ **Better error management** → Handles API errors **globally** for a smoother user experience.  
+✅ **Optimized data fetching** → Implements **SWR-like behaviors** for **server-side and client-side optimization**.  
+✅ **Standardized responses** → Keeps API responses **structured, typed, and predictable**.
 
-These utilities are designed to make your **Next.js development more efficient and scalable**. Feel free to use, adapt, and integrate them into your projects! 🚀
+These utilities are designed to make your **Next.js development more efficient, scalable, and resilient**. Feel free to use, adapt, and integrate them into your projects! 🚀
