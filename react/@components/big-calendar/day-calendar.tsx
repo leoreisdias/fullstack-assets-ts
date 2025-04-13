@@ -77,7 +77,7 @@ export const DayCalendar = ({
     <>
       <DayContainer
         isToday={isToday}
-        onClick={() => console.log("Open Events")}
+        onDoubleClick={() => console.log("Open Events (Modal)")}
       >
         <Box
           position="absolute"
@@ -116,6 +116,10 @@ export const DayCalendar = ({
           </Flex>
         )}
       </DayContainer>
+      <YourModal>
+        <DayEvents events={events.dayEvents} day={day} mutate={mutate} />
+        {/* Deal with day events in a modal */}
+      </YourModal>
     </>
   );
 };

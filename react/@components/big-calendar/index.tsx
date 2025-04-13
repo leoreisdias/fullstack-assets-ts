@@ -33,7 +33,7 @@ const CalendarHeader = styled("div", {
       true: {
         border: "2px solid",
         borderImageSource:
-          "linear-gradient(96.45deg, #02e95e 5.05%, #0575e6 56.92%)",
+          "linear-gradient(96.45deg, #333c8f 5.05%, #0575e6 56.92%)",
         borderImageSlice: "1",
       },
     },
