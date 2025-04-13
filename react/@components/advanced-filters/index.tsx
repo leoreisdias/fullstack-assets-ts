@@ -2,40 +2,6 @@
 
 // NOTE: pra primeiro armazenar e depois envia pra URL, pegar da URL por ultimo! Facilita integracoes diretas com SSR, e nao prejudica o CSR
 
-import { Filter, ListFilter, Loader2, MoreVertical, Save } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { startTransition, useCallback, useEffect, useState } from "react";
-import { useForm, useFormContext } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useQueryClient } from "react-query";
-
-import { Button } from "@/app/components/Button";
-import { DropdownMenu } from "@/app/components/DropdownMenu";
-import { DynamicField } from "@/app/components/Filters/DynamicField";
-import {
-  convertObjectToQueryString,
-  convertQueryStringToObject,
-} from "@/app/components/Filters/helper";
-import { Form } from "@/app/components/Form";
-import { InputText } from "@/app/components/Form/Inputs";
-import { SelectOptions } from "@/app/components/Form/Inputs/InputSelect";
-import { Modal, useModal } from "@/app/components/Modal";
-import { AlertModal, useAlertModal } from "@/app/components/Modal/Alert";
-import { Separator } from "@/app/components/Separator";
-import { Skeleton } from "@/app/components/Skeleton";
-import { Typography } from "@/app/components/Typography";
-import { useFetch } from "@/app/hooks/useFetch";
-import { createFilter, deleteFilter } from "@/app/lib/actions/filters.actions";
-import { ModulesEnum } from "@/app/types/enums/modules";
-import { Result } from "@/app/types/responses";
-import { MyFiltersUseCase } from "@/app/types/use-cases/my-filters";
-import { useTranslation } from "@/app/utils/i18n/client";
-import { zod } from "@/app/validations";
-import { css, cx } from "@/styled-system/css";
-import { Box, Flex, Grid } from "@/styled-system/jsx";
-import { icon } from "@/styled-system/recipes";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 export type AdvancedFiltersOptions = {
   label: string;
   name: string;
@@ -66,7 +32,6 @@ const FilterSave = ({
   const form = useForm<{ filterName: string }>({
     resolver: zodResolver(filterSchema),
   });
-  const { t } = useTranslation(["filters"]);
 
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -81,18 +46,20 @@ const FilterSave = ({
     });
 
     if (response.isSuccess) {
-      toast.success(t("filters:filterSaved"));
+      toast.success("Filter saved");
       queryClient.invalidateQueries(`/filters/my-filters/${module}`);
       close();
-    } else toast.error(response.message);
+    } else {
+      toast.error(response.message);
+    }
   };
 
   return (
     <Flex flexDir="column" gap={4} w="full">
-      <Typography.Text>{t("filters:saveCurrentFilters")}</Typography.Text>
+      <Text>Save current filters</Text>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <InputText label={t("filters:filterName")} name="filterName" />
+          <InputText label="Filter Name" name="filterName" />
           <Flex w="full" justify="flex-end" align="center" gap={4} mt={4}>
             <Button
               variant="outline"
@@ -100,10 +67,10 @@ const FilterSave = ({
               type="button"
               isLoading={form.formState.isSubmitting}
             >
-              {t("filters:cancel")}
+              Cancel
             </Button>
             <Button type="submit" isLoading={form.formState.isSubmitting}>
-              {t("filters:toSave")}
+              Save
             </Button>
           </Flex>
         </form>
@@ -121,7 +88,6 @@ const MyFilters = ({
   close: () => void;
   onApplyFilters: (filters: Record<string, string | string[]> | null) => void;
 }) => {
-  const { t } = useTranslation(["filters"]);
   const [isDeleting, setIsDeleting] = useState(false);
   const { ref, open, close: closeAlert } = useAlertModal();
 
@@ -151,9 +117,11 @@ const MyFilters = ({
     const response = await deleteFilter(id, module);
     setIsDeleting(false);
     if (response.isSuccess) {
-      toast.success(t("filters:filterDeleted"));
+      toast.success("Filter deleted");
       queryClient.invalidateQueries(`/filters/my-filters/${module}`);
-    } else toast.error(response.message);
+    } else {
+      toast.error(response.message);
+    }
   };
 
   return (
@@ -162,15 +130,15 @@ const MyFilters = ({
       {!isLoading &&
         data?.payload.map((filter) => (
           <Box key={filter.id}>
-            <DropdownMenu
+            <YourDropdownMenu
               isLoading={isDeleting}
               items={[
                 {
-                  title: t("filters:apply"),
+                  title: "Apply",
                   action: () => onQuickFilterApply(filter.filters),
                 },
                 {
-                  title: t("filters:delete"),
+                  title: "Delete",
                   action: open,
                 },
               ]}
@@ -194,12 +162,13 @@ const MyFilters = ({
                 {filter.name}
                 <MoreVertical size={18} />
               </Flex>
-            </DropdownMenu>
+            </YourDropdownMenu>
+
             <AlertModal
               ref={ref}
               onConfirm={() => onDelete(filter.id)}
-              title={t("filters:deleteConfirmation")}
-              description={t("filters:deleteDescription")}
+              title="Delete Confirmation"
+              description="Are you sure you want to delete this filter?"
             />
           </Box>
         ))}
@@ -208,7 +177,6 @@ const MyFilters = ({
 };
 
 export const AdvancedFilters = ({ filters, onApplyFilters, module }: Props) => {
-  const { t } = useTranslation(["filters"]);
   const { ref, open, close } = useModal();
   const { ref: saveRef, open: openSave, close: closeSave } = useModal();
   const router = useRouter();
@@ -275,7 +243,7 @@ export const AdvancedFilters = ({ filters, onApplyFilters, module }: Props) => {
             type="button"
           >
             <ListFilter size={18} />
-            {t("filters:filters")}
+            Filters
           </Button>
           {hasFilters && (
             <>
@@ -285,14 +253,14 @@ export const AdvancedFilters = ({ filters, onApplyFilters, module }: Props) => {
                 transform="translateY(20%)"
               >
                 <Filter size={18} />
-                {t("filters:apply")}
+                Apply
               </Button>
               <Button
                 variant="ghost"
                 onClick={onReset}
                 transform="translateY(20%)"
               >
-                {t("filters:toReset")}
+                Reset
               </Button>
               <Button
                 variant="secondary"
@@ -300,32 +268,15 @@ export const AdvancedFilters = ({ filters, onApplyFilters, module }: Props) => {
                 transform="translateY(20%)"
               >
                 <Save size={16} />
-                {t("filters:saveFilters")}
+                Save Filters
               </Button>
             </>
           )}
         </Flex>
 
-        <Modal
-          ref={ref}
-          title={t("filters:selectFilters")}
-          footer={
-            <Flex gap={4} w="full" justify="flex-end" align="center">
-              <Button variant="ghost" onClick={onReset}>
-                {t("filters:toReset")}
-              </Button>
-              <Button variant="outline" onClick={close}>
-                {t("filters:close")}
-              </Button>
-              <Button variant="outline" onClick={onApply}>
-                <Filter size={18} />
-                {t("filters:apply")}
-              </Button>
-            </Flex>
-          }
-        >
+        <YourModalComponent>
           <Flex flexDir="column" gap={4} minW="780px">
-            <Typography.Text>{t("filters:savedFilters")}</Typography.Text>
+            <Text>Saved Filters</Text>
             <MyFilters
               module={module}
               close={close}
@@ -334,19 +285,31 @@ export const AdvancedFilters = ({ filters, onApplyFilters, module }: Props) => {
 
             <Separator my={4} />
 
-            <Typography.Text>{t("filters:toFilter")}</Typography.Text>
+            <Text>Filter Options</Text>
 
             <Grid w="full" gridTemplateColumns="1fr 1fr 1fr" gap={4} rowGap={6}>
               {filters.map((filter) => (
                 <DynamicField key={filter.name} field={filter} />
               ))}
             </Grid>
+            <Flex gap={4} w="full" justify="flex-end" align="center">
+              <Button variant="ghost" onClick={onReset}>
+                Reset
+              </Button>
+              <Button variant="outline" onClick={close}>
+                Close
+              </Button>
+              <Button variant="outline" onClick={onApply}>
+                <Filter size={18} />
+                Apply
+              </Button>
+            </Flex>
           </Flex>
-        </Modal>
+        </YourModalComponent>
       </Form>
-      <Modal ref={saveRef} title={t("filters:saveFilters")}>
+      <YourModalComponent>
         <FilterSave close={closeSave} module={module} />
-      </Modal>
+      </YourModalComponent>
     </Flex>
   );
 };

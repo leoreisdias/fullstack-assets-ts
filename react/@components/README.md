@@ -40,14 +40,6 @@ An easy way to use PandaCSS with motion (the new framer-motion), so you have the
 
 - Animating a modal with smooth transitions and custom styling.
 
-### Pagination
-
-A simple pagination component with logic to display pages between the first and last available.
-
-**Example Use Case:**
-
-- Navigating through a list of items fetched from an API with multiple pages.
-
 ### PDF Visualizer
 
 Uses react-pdf to display PDFs on the screen, but with different styling from the native browser, and an API to control pages, quantities, and more. This is a template, but it's amazing how customizable the PDF display can be here. Kudos to Wojciech Maj for this.
@@ -55,13 +47,5 @@ Uses react-pdf to display PDFs on the screen, but with different styling from th
 **Example Use Case:**
 
 - Displaying a multi-page PDF document with custom navigation controls.
-
-### Vertical Expandable Card
-
-A card where at the end, the data has a "see more" effect, as if they were fading out at the end.
-
-**Example Use Case:**
-
-- Displaying a product description with a "read more" option to expand the full text.
 
 That's it! This is a summary and a bit of the philosophy with some examples and such. Feel free to have fun with these components and make them your own!
