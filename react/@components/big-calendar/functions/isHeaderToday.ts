@@ -3,7 +3,7 @@ export const isHeaderToday = (
   currentMonthYear: {
     currentMonth: number;
     currentYear: number;
-  },
+  }
 ) => {
   const { currentMonth, currentYear } = currentMonthYear;
 
