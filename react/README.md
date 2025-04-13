@@ -71,3 +71,9 @@ Funções auxiliares, como **serialização de FormData e outras manipulações 
 ---
 
 Cada subpasta contém um **README detalhado**, então sinta-se à vontade para explorar! 🚀
+
+---
+
+### On my radar
+
+- ⚠️ Some components like AdvancedFilters will be revisited and updated as soon as reused in real projects.
