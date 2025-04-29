@@ -48,4 +48,37 @@ Uses react-pdf to display PDFs on the screen, but with different styling from th
 
 - Displaying a multi-page PDF document with custom navigation controls.
 
+### Data Table
+
+The Data Table component is a highly customizable and performant solution for displaying tabular data, built on top of the TanStack Table library. It offers a range of features designed to enhance usability and flexibility, making it suitable for various data presentation needs.
+
+**Key Features:**
+
+- **Declarative API:** The Data Table provides a declarative API for table configuration and state management, allowing for seamless integration with TanStack Table's powerful features.
+- **Advanced Filtering:** Includes debounced updates for efficient filter application without excessive re-renders, utilizing a custom `debounce` utility.
+- **Expandable Rows:** Supports expandable rows for displaying nested sub-rows, ideal for hierarchical data structures.
+- **Column Resizing and Pinning:** Offers smooth column resizing and the ability to pin columns to the left or right, enhancing user experience.
+- **Styling with PandaCSS:** Utilizes PandaCSS for consistent and maintainable styling, with composable sub-components for reusability.
+- **Pagination Support:** Integrated pagination controls for navigating large datasets, with state management synchronized with the table.
+- **Drag-to-Scroll:** Implements drag-to-scroll functionality in the `<tbody>` section, enhancing user experience when dealing with wide tables.
+- **Smooth Animations:** Uses the `motion/react` library for row transition animations, providing visual feedback when adding or removing rows.
+- **Headless Components:** Provides headless table components inspired by Radix UI design, allowing for high customization while maintaining accessibility.
+- **useDataTable Hook:** Includes a utility hook for managing table state and applying filters programmatically with built-in debounce.
+
+**Example Use Case:**
+
+- Displaying a large dataset with features like filtering, pagination, and expandable rows for detailed views.
+- Implementing tables with hierarchical data that can be expanded to show additional details.
+- Creating admin interfaces with responsive tables that support sorting, filtering, and pagination.
+
+**Advanced Insights:**
+
+- **Performance Optimizations:** The component employs memoization, debouncing, and efficient rendering techniques to ensure high performance even with large datasets.
+- **Accessibility Considerations:** Developers are encouraged to add ARIA attributes and keyboard navigation support to improve accessibility for users with assistive technologies.
+- **Modular Architecture:** The component is divided into specialized subcomponents (DataTable, ExpanderCell, Pagination) that can be used independently or composed together.
+- **Library Integration:** Beyond TanStack Table, the component integrates with PandaCSS for styling, motion/react for animations, and uses Phosphor Icons for visual elements.
+- **Rendering Optimization:** Implements conditional rendering based on resizing state and uses `AnimatePresence` for smooth transitions between table states.
+- **Efficient State Management:** Utilizes hooks like `useCallback`, `useMemo`, and `useImperativeHandle` to manage stable references and expose the table API declaratively.
+
+For more technical details, refer to the [TanStack Table Documentation](https://tanstack.com/table/v8/docs/guide/introduction).
 That's it! This is a summary and a bit of the philosophy with some examples and such. Feel free to have fun with these components and make them your own!
