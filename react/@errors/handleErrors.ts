@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Failure } from "../types/response";
+import { Failure } from "../@types/response";
 
 const sanitizeErrorMessage = (message: string | undefined | null): string => {
   if (!message) {

@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { Result } from "./types/response";
+import { Result } from "../@types/response";
 import { handleError } from "./errors/handleErrors";
 
 type FetcherRequestInit<W> = RequestInit & {
