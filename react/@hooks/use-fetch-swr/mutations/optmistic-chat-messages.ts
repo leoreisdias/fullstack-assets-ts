@@ -29,7 +29,7 @@ export const sendMessage = (message: string) => {
     {
       optimisticData: {
         message: "Enviando mensagem...",
-        payload: [...(data?.payload || []), optmisticMessage], // 'data' is from useSWR
+        payload: [...(data?.payload || []), optmisticMessage], // 'data' is from useSWR/Tanstack Query
       },
       revalidate: false,
       populateCache: true,

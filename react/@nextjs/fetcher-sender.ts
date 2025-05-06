@@ -26,17 +26,14 @@ export async function fetcher<T = unknown>(
   init?: FetcherRequestInit<T>
 ): Promise<Result<null> | Result<T>> {
   // NOTE: NEXT-AUTH SESSION EXAMPLE - You can adapt to a different token approach
+  // const apiToken =
+  //   (await cookies()).get("authjs.session-token")?.value ||
+  //   (await cookies()).get("__Secure-authjs.session-token")?.value;
 
-  //let session: Session | null = null;
-
-  //session = await auth();
-
-  //if (!session) session = await auth();
-  // const token = session?.user.accessToken
-
+  // const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
+  
   const baseUrl = process.env.BASE_URL; // Example, but I recommend an env variable approach
 
-  const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
 
   const res = await tryCatch<Response>(
     fetch(`${baseUrl}${input}`, {
@@ -80,17 +77,15 @@ export const sender = async <T = unknown>(
   }
 ) => {
   // NOTE: NEXT AUTH USAGE: Adapt for your token logic
-  // let session: Session | null = null;
+  // const apiToken =
+  //   (await cookies()).get("authjs.session-token")?.value ||
+  //   (await cookies()).get("__Secure-authjs.session-token")?.value;
 
-  // session = await auth();
-
-  // if (!session) session = await auth();
+  // const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
 
   const cookieStore = cookies();
 
   const baseUrl = process.env.BASE_URL;
-
-  const headers = headers(); // Based on Jack Herrington's video - pending to try it (next-auth required)
 
   const response = await tryCatch<AxiosResponse<T>>(
     axios({
@@ -138,3 +133,13 @@ export async function tryCatch<T = Result, E = Error>(
     return handleError(error) as Result<T, E>;
   }
 }
+
+// NOTE: USE THIS FOR CLIENT SIDE FETCHES SUCH IN _queryFn_ from _useQuery_ hook (Tanstack Query)
+export const clientFetcher = async <T = any>(url: string, config?: AxiosRequestConfig<T> | undefined) => {
+  const res = await api.get<Result<T>>(url, {
+    baseURL: "/api/internal",
+    ...config,
+  });
+
+  return res?.data;
+};
