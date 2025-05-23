@@ -1,28 +1,18 @@
-"use client";
-import { motion } from "motion/react";
-import { forwardRef } from "react";
-import {
-  Flex,
-  Grid,
-  FlexProps,
-  GridProps,
-  BoxProps,
-  Box,
-} from "styled-system/jsx";
+import { Box, type BoxProps, Flex, type FlexProps, Grid, type GridProps } from '@styled-system/jsx'
+import { motion } from 'framer-motion'
+import { forwardRef } from 'react'
 
-const ForwardedFlex = forwardRef<HTMLDivElement, FlexProps>((props, ref) => (
-  <Flex {...props} ref={ref} />
-));
+const MotionFlex = motion(
+  forwardRef<HTMLDivElement, FlexProps>((props, ref) => <Flex ref={ref} {...props} />)
+)
 
-export const FlexMotion = motion.create(ForwardedFlex);
+const MotionBox = motion(
+  forwardRef<HTMLDivElement, BoxProps>((props, ref) => <Box ref={ref} {...props} />)
+)
 
-const ForwardedGrid = forwardRef<HTMLDivElement, GridProps>((props, ref) => (
-  <Grid {...props} ref={ref} />
-));
-export const GridMotion = motion.create(ForwardedGrid);
+const MotionGrid = motion(
+  forwardRef<HTMLDivElement, GridProps>((props, ref) => <Grid ref={ref} {...props} />)
+)
 
-const ForwaredBox = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
-  <Box {...props} ref={ref} />
-));
-
-export const BoxMotion = motion.create(ForwaredBox);
+// Exporta com tipagem correta e mantém o CSS declarativo
+export { MotionFlex as FlexMotion, MotionBox as BoxMotion, MotionGrid as GridMotion }
