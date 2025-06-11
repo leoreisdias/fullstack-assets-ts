@@ -26,3 +26,13 @@ export type PaginatedResult<T = any> = {
   statusCode: number;
   message: string;
 };
+
+// For optimistic updates in mutations
+export const getOptimisticResult = <T = any>(payload: T): Result<T> => {
+  return {
+    payload,
+    message: "",
+    ok: true,
+    error: null,
+  };
+};
