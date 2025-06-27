@@ -1,3 +1,4 @@
+import React from "react";
 import { HTMLStyledProps } from "styled-system/types";
 import { Table } from "../../styled/table";
 import { DataTableContext, useColumnSizeVars, useTableContext } from "./hooks";
@@ -10,7 +11,17 @@ type DataTableProviderProps<T> = React.PropsWithChildren<{
 }>;
 
 function Provider<T>({ table, children }: DataTableProviderProps<T>) {
-  return <DataTableContext.Provider value={table}>{children}</DataTableContext.Provider>;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const stableTable = React.useMemo(
+    () => table,
+    [table.options.data, table.options.columns]
+  );
+
+  return (
+    <DataTableContext.Provider value={stableTable}>
+      {children}
+    </DataTableContext.Provider>
+  );
 }
 
 // Root Component

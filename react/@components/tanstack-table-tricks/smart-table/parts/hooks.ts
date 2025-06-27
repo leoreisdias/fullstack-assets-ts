@@ -19,7 +19,8 @@ export const DataTableContext = React.createContext<Table<any> | null>(null);
 // ========== HOOKS ==========
 const useTableContext = () => {
   const table = React.useContext(DataTableContext);
-  if (!table) throw new Error("useTable must be used within DataTable.Provider");
+  if (!table)
+    throw new Error("useTable must be used within DataTable.Provider");
   return table;
 };
 
@@ -44,11 +45,14 @@ function useTableFilter<T = any>(table?: Table<T>) {
         tableApi?.setSorting([]);
       }
     },
-    [table],
+    [table]
   );
 
   // Aplicar debounce à função estável
-  const debouncedOnChange = useMemo(() => debounce(handleFilterChange, 600), [handleFilterChange]);
+  const debouncedOnChange = useMemo(
+    () => debounce(handleFilterChange, 600),
+    [handleFilterChange]
+  );
 
   useEffect(() => {
     return () => {
@@ -148,17 +152,4 @@ const useColumnSizeVars = (table: Table<any>) => {
   }, [table.getState().columnSizingInfo, table.getState().columnSizing]);
 };
 
-// Hook para resizing logic
-const useTableResizing = (table: Table<any>) => {
-  const columnSizeVars = useColumnSizeVars(table);
-
-  return React.useMemo(() => {
-    return {
-      isResizing: table.getState().columnSizingInfo.isResizingColumn,
-      columnSizeVars,
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [table.getState().columnSizingInfo.isResizingColumn, columnSizeVars]);
-};
-
-export { useTableContext, useTable, useColumnSizeVars, useTableResizing, useTableFilter };
+export { useTableContext, useTable, useColumnSizeVars, useTableFilter };
