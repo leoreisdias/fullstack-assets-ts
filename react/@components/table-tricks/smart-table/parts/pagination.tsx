@@ -13,6 +13,7 @@ import { Flex } from "styled-system/jsx";
 import { icon } from "styled-system/recipes";
 import { SystemStyleObject } from "styled-system/types";
 import { useTableContext } from "./hooks";
+import { memo } from "react";
 
 type DataTablePaginationProps = {
   css?: SystemStyleObject;
@@ -29,8 +30,8 @@ const collection = createListCollection({
   ],
 });
 
-export function Pagination({ css: cssProps }: DataTablePaginationProps) {
-  const table = useTableContext();
+function BasePagination({ css: cssProps }: DataTablePaginationProps) {
+  const { table } = useTableContext();
 
   return (
     <Flex align="center" justify="space-between" px="2" w="full" css={cssProps}>
@@ -68,10 +69,16 @@ export function Pagination({ css: cssProps }: DataTablePaginationProps) {
           </Select.Positioner>
         </Select.Root>
       </Flex>
-
       <Flex align="center" gap="2" justify="center">
-        <Flex w="100px" align="center" justify="center" textStyle="sm" fontWeight="medium">
-          Pag. {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+        <Flex
+          w="100px"
+          align="center"
+          justify="center"
+          textStyle="sm"
+          fontWeight="medium"
+        >
+          Pag. {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
         </Flex>
         <Button
           variant="ghost"
@@ -101,7 +108,14 @@ export function Pagination({ css: cssProps }: DataTablePaginationProps) {
           <span className={css({ srOnly: true })}>Go to previous page</span>
           <CaretLeft className={icon()} />
         </Button>
-        <Button variant="ghost" h="8" w="8" p="0" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+        <Button
+          variant="ghost"
+          h="8"
+          w="8"
+          p="0"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
           <span className={css({ srOnly: true })}>Go to next page</span>
           <CaretRight className={icon()} />
         </Button>
@@ -122,3 +136,7 @@ export function Pagination({ css: cssProps }: DataTablePaginationProps) {
     </Flex>
   );
 }
+
+const Pagination = memo(BasePagination);
+
+export { Pagination };

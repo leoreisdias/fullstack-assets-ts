@@ -14,14 +14,17 @@ import {
 } from "@tanstack/react-table";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
-export const DataTableContext = React.createContext<Table<any> | null>(null);
-
+const EMPTY_DATA: any[] = [];
+export const DataTableContext = React.createContext<{
+  table: Table<any>;
+  asFlex?: boolean;
+} | null>(null);
 // ========== HOOKS ==========
 const useTableContext = () => {
-  const table = React.useContext(DataTableContext);
-  if (!table)
+  const context = React.useContext(DataTableContext);
+  if (!context)
     throw new Error("useTable must be used within DataTable.Provider");
-  return table;
+  return context;
 };
 
 type DataTableRef = {
@@ -67,7 +70,7 @@ function useTableFilter<T = any>(table?: Table<T>) {
   };
 }
 
-function useTable<T>({
+function useTable<T = any>({
   columns,
   data,
   config,
@@ -89,8 +92,10 @@ function useTable<T>({
     setPagination(updaterOrValue);
   }, []);
 
+  const safeData = !data || data.length === 0 ? EMPTY_DATA : data;
+
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     enableFilters: true,
     getCoreRowModel: getCoreRowModel(),
@@ -112,23 +117,11 @@ function useTable<T>({
     },
     defaultColumn: {
       maxSize: 800,
+      enableResizing: false,
       ...config?.defaultColumn,
     },
     columnResizeMode: "onChange",
-    // Separar propriedades que podem conflitar
-    ...(config && {
-      ...config,
-      // Garantir que essas propriedades não sejam sobrescritas
-      onPaginationChange: handlePaginationChange,
-      state: {
-        columnPinning: {
-          left: pinnedColumns?.left,
-          right: pinnedColumns?.right,
-        },
-        pagination: pagination,
-        ...config?.state,
-      },
-    }),
+    ...config,
   });
 
   return table;

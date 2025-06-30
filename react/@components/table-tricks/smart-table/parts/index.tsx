@@ -1,5 +1,5 @@
 export { Provider, Root } from "./provider-root";
 export { Body } from "./body";
-export { Head, Header, HeaderRow } from "./headers";
+export { Head, Header, HeaderRow, HeaderRows } from "./headers";
 export { Pagination } from "./pagination";
-export { BodyRow, Cell } from "./rows-cell";
+export { BodyRow, Cell, BodyRows } from "./rows-cell";
