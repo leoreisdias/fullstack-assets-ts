@@ -20,11 +20,12 @@ export const DataTableContext = React.createContext<{
   asFlex?: boolean;
 } | null>(null);
 // ========== HOOKS ==========
-const useTableContext = () => {
+const useTableContext = (table?: Table<any>) => {
   const context = React.useContext(DataTableContext);
-  if (!context)
+  if (!context && !table)
     throw new Error("useTable must be used within DataTable.Provider");
-  return context;
+
+  return context ?? { table: table as Table<any>, asFlex: false };
 };
 
 type DataTableRef = {

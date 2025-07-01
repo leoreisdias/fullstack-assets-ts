@@ -32,9 +32,9 @@ export const tableHeader = defineRecipe({
   base: {
     "& tr": {
       borderBottom: "1px solid",
-      borderColor: "border.muted",
-      bg: "bg.muted/50",
+      borderColor: "red",
     },
+    bg: "bg.muted/50",
   },
 });
 
@@ -77,7 +77,7 @@ export const tableRow = defineRecipe({
     borderColor: "border.muted",
     transition: "colors",
 
-    _hover: {
+    "&:not(thead > tr):hover": {
       bg: "bg.muted/50",
     },
 
@@ -123,7 +123,12 @@ export const tableHead = defineRecipe({
       true: {
         display: "flex",
         alignItems: "center",
-        flex: 1,
+        flex: "1",
+        minWidth: "0",
+
+        "&[data-state=resizable]": {
+          flex: "0 0 auto",
+        },
       },
     },
   },
@@ -146,6 +151,11 @@ export const tableCell = defineRecipe({
         display: "flex",
         alignItems: "center",
         flex: 1,
+        minWidth: "0",
+
+        "&[data-state=resizable]": {
+          flex: "0 0 auto",
+        },
       },
     },
   },

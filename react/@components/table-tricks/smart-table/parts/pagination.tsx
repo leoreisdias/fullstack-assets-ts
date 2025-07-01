@@ -14,9 +14,11 @@ import { icon } from "styled-system/recipes";
 import { SystemStyleObject } from "styled-system/types";
 import { useTableContext } from "./hooks";
 import { memo } from "react";
+import { Table } from "@tanstack/react-table";
 
 type DataTablePaginationProps = {
   css?: SystemStyleObject;
+  table?: Table<any>;
 };
 
 const collection = createListCollection({
@@ -30,8 +32,11 @@ const collection = createListCollection({
   ],
 });
 
-function BasePagination({ css: cssProps }: DataTablePaginationProps) {
-  const { table } = useTableContext();
+function BasePagination({
+  css: cssProps,
+  table: tableProp,
+}: DataTablePaginationProps) {
+  const { table } = useTableContext(tableProp);
 
   return (
     <Flex align="center" justify="space-between" px="2" w="full" css={cssProps}>

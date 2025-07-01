@@ -99,6 +99,7 @@ function Head({ head, ...props }: DataTableHeadProps) {
         ...getCommonPinningStyles(head.column, true, head.index),
         width: `calc(var(--header-${head?.id}-size) * 1px)`,
       }}
+      data-state={head.column.getCanResize() ? "resizable" : undefined}
       position="relative"
       color="font"
       css={{

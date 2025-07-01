@@ -33,6 +33,7 @@ function Cell({ cell, ...props }: DataTableCellProps) {
           : undefined,
         ...props.style,
       }}
+      data-state={cell.column.getCanResize() ? "resizable" : undefined}
     >
       {flexRender(cell.column.columnDef.cell, cell.getContext())}
     </TableCell>
@@ -98,7 +99,12 @@ const BodyRowComponent = ({
         })}
       </TableRow>
       {row.getIsExpanded() && (
-        <TableRow key={`${row.id}-sub`} expanded as={asFlex ? "div" : "tr"}>
+        <TableRow
+          key={`${row.id}-sub`}
+          expanded
+          as={asFlex ? "div" : "tr"}
+          className="expanded"
+        >
           {row
             .getVisibleCells()
             .filter((item) => {
@@ -111,6 +117,7 @@ const BodyRowComponent = ({
                   colSpan={table.getAllLeafColumns().length}
                   as={asFlex ? "div" : "td"}
                   asFlex={asFlex ? true : false}
+                  rounded="inherit"
                 >
                   {flexRender(
                     cell.column.columnDef.aggregatedCell,
