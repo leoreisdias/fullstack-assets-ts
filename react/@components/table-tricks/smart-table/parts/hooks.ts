@@ -13,6 +13,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { produce } from "immer";
 
 const EMPTY_DATA: any[] = [];
 export const DataTableContext = React.createContext<{
@@ -95,7 +96,8 @@ function useTable<T = any>({
 
   const safeData = !data || data.length === 0 ? EMPTY_DATA : data;
 
-  const table = useReactTable({
+  // Configuração base da tabela
+  const baseTableConfig: TableOptions<T> = {
     data: safeData,
     columns,
     enableFilters: true,
@@ -104,26 +106,77 @@ function useTable<T = any>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    getRowId: config?.getRowId,
+    columnResizeMode: "onChange",
     onPaginationChange: handlePaginationChange,
-    onRowSelectionChange: config?.onRowSelectionChange,
     state: {
       columnPinning: {
         left: pinnedColumns?.left,
         right: pinnedColumns?.right,
       },
       pagination: pagination,
-      // Mover config?.state ANTES de pagination para evitar sobrescrever
-      ...config?.state,
     },
     defaultColumn: {
       maxSize: 800,
       enableResizing: false,
-      ...config?.defaultColumn,
     },
-    columnResizeMode: "onChange",
-    ...config,
+  };
+
+  // Merge seguro usando Immer - preserva propriedades críticas
+  const finalTableConfig = produce(baseTableConfig, (draft) => {
+    if (config) {
+      // Merge todas as propriedades do config, exceto as críticas
+      Object.keys(config).forEach((key) => {
+        const configKey = key as keyof TableOptions<T>;
+
+        // Propriedades que NÃO devem ser sobrescritas pelo config
+        const criticalProps = ["onPaginationChange", "state"];
+
+        if (!criticalProps.includes(key)) {
+          // @ts-ignore - Immer handles the typing complexity
+          draft[configKey] = config[configKey];
+        }
+      });
+
+      // Merge seguro do state, preservando pagination
+      if (config.state) {
+        Object.keys(config.state).forEach((stateKey) => {
+          if (stateKey !== "pagination" && stateKey !== "columnPinning") {
+            // @ts-ignore
+            draft.state[stateKey] = config.state[stateKey];
+          }
+        });
+
+        // Merge columnPinning preservando nossas configurações
+        if (config.state.columnPinning && draft.state) {
+          draft.state.columnPinning = {
+            ...draft.state.columnPinning,
+            ...config.state.columnPinning,
+            // Preservar left/right se foram definidos via pinnedColumns
+            ...(pinnedColumns?.left && { left: pinnedColumns.left }),
+            ...(pinnedColumns?.right && { right: pinnedColumns.right }),
+          };
+        }
+      }
+
+      // Merge seguro do defaultColumn
+      if (config.defaultColumn) {
+        draft.defaultColumn = {
+          ...draft.defaultColumn,
+          ...config.defaultColumn,
+        };
+      }
+
+      // Propriedades específicas que podem ser sobrescritas
+      if (config.getRowId) {
+        draft.getRowId = config.getRowId;
+      }
+      if (config.onRowSelectionChange) {
+        draft.onRowSelectionChange = config.onRowSelectionChange;
+      }
+    }
   });
+
+  const table = useReactTable(finalTableConfig);
 
   return table;
 }

@@ -7,6 +7,7 @@ import { AnimatePresence } from "motion/react";
 import { TableBody, TableCell, TableRow } from "../../styled/table";
 import { useTableContext } from "./hooks";
 import { BodyRow } from "./rows-cell";
+import { Skeleton } from "../../loadings/skeleton";
 
 type DataTableBodyProps = Omit<
   HTMLStyledProps<typeof TableBody>,
@@ -15,12 +16,14 @@ type DataTableBodyProps = Omit<
   stripped?: boolean;
   animateRows?: boolean;
   children?: ((row: Row<any>[]) => React.ReactNode) | React.ReactNode;
+  isLoading?: boolean;
 };
 
 function Body({
   stripped = true,
   animateRows = false,
   children,
+  isLoading,
   ...props
 }: DataTableBodyProps) {
   const { table, asFlex } = useTableContext();
@@ -29,6 +32,20 @@ function Body({
 
   const hasCustomRender = children !== undefined && children !== null;
   const isRenderFunction = typeof children === "function";
+
+  if (isLoading) {
+    return (
+      <TableBody
+        {...props}
+        as={asFlex ? "div" : "tbody"}
+        asFlex={asFlex ? true : false}
+      >
+        <Skeleton w="full" h="24" />
+        <Skeleton w="full" h="24" />
+        <Skeleton w="full" h="24" />
+      </TableBody>
+    );
+  }
 
   return (
     <TableBody
