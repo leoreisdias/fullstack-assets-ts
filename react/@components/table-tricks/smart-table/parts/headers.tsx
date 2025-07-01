@@ -21,7 +21,10 @@ type DataTableHeaderProps = Omit<
   children?: ((rows: HeaderGroup<any>[]) => React.ReactNode) | React.ReactNode;
 };
 
-type HeaderRowProps = Omit<HTMLStyledProps<typeof TableRow>, "children"> & {
+type HeaderRowProps = Omit<
+  HTMLStyledProps<typeof TableRow>,
+  "children" | "transition" | "ref"
+> & {
   headers: HeaderType<any, unknown>[];
   children?: (headers: HeaderType<any, unknown>) => React.ReactNode;
 };
