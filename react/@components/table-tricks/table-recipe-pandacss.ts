@@ -32,7 +32,7 @@ export const tableHeader = defineRecipe({
   base: {
     "& tr": {
       borderBottom: "1px solid",
-      borderColor: "red",
+      borderColor: "bg.muted/50",
     },
     bg: "bg.muted/50",
   },
