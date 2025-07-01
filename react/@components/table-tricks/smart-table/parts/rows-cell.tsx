@@ -5,13 +5,15 @@ import { TableCell, TableRow } from "../../styled/table";
 import { getCommonPinningStyles } from "./helpers";
 import { memo } from "react";
 
-type DataTableRowProps = Omit<HTMLStyledProps<typeof TableRow>, "children"> & {
+type DataTableRowProps = Omit<
+  HTMLStyledProps<typeof TableRow>,
+  "children" | "transition" | "ref"
+> & {
   row: Row<any>;
   stripped?: boolean;
   animateRows?: boolean;
   children?: (cell: CellType<any, any>) => React.ReactNode;
 };
-
 type DataTableCellProps = HTMLStyledProps<typeof TableCell> & {
   cell: CellType<any, any>;
 };

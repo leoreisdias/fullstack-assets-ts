@@ -1,6 +1,7 @@
 "use client";
+import { ForwardRefComponent, HTMLMotionProps, motion } from "motion/react";
 import * as React from "react";
-import { styled } from "styled-system/jsx";
+import { HTMLStyledProps, styled, StyledComponent } from "styled-system/jsx";
 import {
   tableContainer,
   tableRoot,
@@ -11,19 +12,29 @@ import {
   tableRow,
   tableCell,
   tableCaption,
+  TableHeaderVariantProps,
+  TableBodyVariantProps,
+  TableFooterVariantProps,
+  TableHeadVariantProps,
+  TableRowVariantProps,
+  TableCellVariantProps,
+  TableCaptionVariantProps,
+  TableVariantProps,
 } from "styled-system/recipes";
-
 const TableContainer = styled("div", tableContainer);
+
+const HTMLTable = styled("table") as StyledComponent<
+  "table",
+  TableVariantProps & { as?: React.ElementType }
+>;
 
 const SCROLL_SPEED = 1.5; // or pass via props
 const DRAG_THRESHOLD = 10; // em pixels
 
-const Table = React.forwardRef<
+const BaseTable = React.forwardRef<
   HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement> & {
-    tableProps?: React.HTMLAttributes<HTMLDivElement>;
-  }
->((props, forwardedRef) => {
+  HTMLStyledProps<typeof HTMLTable>
+>(({ as, style, ...props }, forwardedRef) => {
   const tableRef = React.useRef<HTMLDivElement>(null);
 
   const [isDragging, setIsDragging] = React.useState(false);
@@ -83,6 +94,8 @@ const Table = React.forwardRef<
     setIsDragging(false);
   };
 
+  console.log("Table rendered with props:", props);
+
   return (
     <TableContainer
       role="table"
@@ -103,24 +116,52 @@ const Table = React.forwardRef<
       cursor={isDragging ? "grabbing" : undefined}
       {...props}
     >
-      <table ref={forwardedRef} {...props.tableProps}>
+      <HTMLTable ref={forwardedRef} as={as} w="full" style={style}>
         {props.children}
-      </table>
+      </HTMLTable>
     </TableContainer>
   );
 });
-Table.displayName = "Table";
+BaseTable.displayName = "Table";
 
-export const Root = styled(Table, tableRoot);
-export const Header = styled("thead", tableHeader);
-export const Body = styled("tbody", tableBody);
-export const Footer = styled("tfoot", tableFooter);
-export const Head = styled("th", tableHead);
-export const Row = styled("tr", tableRow);
-export const Cell = styled("td", tableCell);
-export const Caption = styled("caption", tableCaption);
+export const Table = styled(BaseTable, tableRoot) as StyledComponent<
+  ForwardRefComponent<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>,
+  TableVariantProps & { as?: React.ElementType }
+>;
+export const TableHeader = styled("thead", tableHeader) as StyledComponent<
+  "thead",
+  TableHeaderVariantProps & { as?: React.ElementType }
+>;
+export const TableBody = styled("tbody", tableBody) as StyledComponent<
+  "tbody",
+  TableBodyVariantProps & { as?: React.ElementType }
+>;
+export const TableFooter = styled("tfoot", tableFooter) as StyledComponent<
+  "tfoot",
+  TableFooterVariantProps & { as?: React.ElementType }
+>;
+export const TableHead = styled("th", tableHead) as StyledComponent<
+  "th",
+  TableHeadVariantProps & { as?: React.ElementType }
+>;
 
-export const Resizer = styled("div", {
+export const TableRow = motion.create(
+  styled("tr", tableRow) as StyledComponent<
+    "tr",
+    TableRowVariantProps & { as?: React.ElementType }
+  >
+);
+
+export const TableCell = styled("td", tableCell) as StyledComponent<
+  "td",
+  TableCellVariantProps & { as?: React.ElementType }
+>;
+export const TableCaption = styled("caption", tableCaption) as StyledComponent<
+  "caption",
+  TableCaptionVariantProps & { as?: React.ElementType }
+>;
+
+export const TableResizer = styled("div", {
   base: {
     position: "absolute",
     top: "50%",

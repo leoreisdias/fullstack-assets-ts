@@ -56,21 +56,18 @@ function Body({
       {hasCustomRender && !isRenderFunction && (
         <React.Fragment>{children}</React.Fragment>
       )}
-      {hasCustomRender && isRenderFunction && <>{children(rows)}</>}
 
-      <AnimatePresence mode="wait">
-        {!hasCustomRender &&
-          rows.map((row) => {
-            return (
-              <BodyRow
-                key={row.id}
-                row={row}
-                stripped={stripped}
-                animateRows={!!animateRows}
-              />
-            );
+      {hasCustomRender && isRenderFunction && (
+        <AnimatePresence mode="wait">{children(rows)}</AnimatePresence>
+      )}
+
+      {!hasCustomRender && (
+        <AnimatePresence mode="wait">
+          {rows.map((row) => {
+            return <BodyRow key={row.id} row={row} stripped={stripped} />;
           })}
-      </AnimatePresence>
+        </AnimatePresence>
+      )}
 
       {!rows?.length && (
         <TableRow as={asFlex ? "div" : "tr"} asFlex={asFlex ? true : false}>
