@@ -1,4 +1,4 @@
-export { Provider, Root } from "./provider-root";
+export { Provider, Root, ScrollContainer } from "./provider-root";
 export { Body } from "./body";
 export { Head, Header, HeaderRow, HeaderRows } from "./headers";
 export { Pagination } from "./pagination";

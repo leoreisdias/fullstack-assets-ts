@@ -1,5 +1,5 @@
 "use client";
-import { ForwardRefComponent, HTMLMotionProps, motion } from "motion/react";
+import { ForwardRefComponent, motion } from "motion/react";
 import * as React from "react";
 import { HTMLStyledProps, styled, StyledComponent } from "styled-system/jsx";
 import {
@@ -21,20 +21,15 @@ import {
   TableCaptionVariantProps,
   TableVariantProps,
 } from "styled-system/recipes";
-const TableContainer = styled("div", tableContainer);
 
-const HTMLTable = styled("table") as StyledComponent<
-  "table",
-  TableVariantProps & { as?: React.ElementType }
->;
+const TableContainer = styled("div", tableContainer);
 
 const SCROLL_SPEED = 1.5; // or pass via props
 const DRAG_THRESHOLD = 10; // em pixels
 
-const BaseTable = React.forwardRef<
-  HTMLTableElement,
-  HTMLStyledProps<typeof HTMLTable>
->(({ as, style, ...props }, forwardedRef) => {
+export const ScrollContainer = (
+  props: React.PropsWithChildren & HTMLStyledProps<typeof TableContainer>
+) => {
   const tableRef = React.useRef<HTMLDivElement>(null);
 
   const [isDragging, setIsDragging] = React.useState(false);
@@ -94,40 +89,32 @@ const BaseTable = React.forwardRef<
     setIsDragging(false);
   };
 
-  console.log("Table rendered with props:", props);
-
   return (
     <TableContainer
-      role="table"
-      aria-label="Scrollable table"
-      tabIndex={0}
+      w="full"
+      overflowX="auto"
       ref={tableRef}
+      aria-label="Scrollable table"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseUp}
       onMouseUp={handleMouseUp}
-      overflowX="auto"
-      width="100%" // Allows the container to occupy all available width
       maxWidth="100%" // Never exceeds the maximum size of the parent container
+      userSelect={isDragging ? "none" : "text"}
       borderRadius="md"
       border="1px solid"
       borderColor="border.muted"
-      userSelect={isDragging ? "none" : "text"}
       cursor={isDragging ? "grabbing" : undefined}
       {...props}
-    >
-      <HTMLTable ref={forwardedRef} as={as} w="full" style={style}>
-        {props.children}
-      </HTMLTable>
-    </TableContainer>
+    />
   );
-});
-BaseTable.displayName = "Table";
+};
 
-export const Table = styled(BaseTable, tableRoot) as StyledComponent<
+export const Table = styled("table", tableRoot) as StyledComponent<
   ForwardRefComponent<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>,
   TableVariantProps & { as?: React.ElementType }
 >;
+
 export const TableHeader = styled("thead", tableHeader) as StyledComponent<
   "thead",
   TableHeaderVariantProps & { as?: React.ElementType }

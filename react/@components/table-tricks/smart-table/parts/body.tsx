@@ -9,19 +9,17 @@ import { useTableContext } from "./hooks";
 import { BodyRow } from "./rows-cell";
 import { Skeleton } from "../../loadings/skeleton";
 
-type DataTableBodyProps = Omit<
+type DataTableBodyProps<T = any> = Omit<
   HTMLStyledProps<typeof TableBody>,
   "children"
 > & {
   stripped?: boolean;
-  animateRows?: boolean;
-  children?: ((row: Row<any>[]) => React.ReactNode) | React.ReactNode;
+  children?: ((row: Row<T>[]) => React.ReactNode) | React.ReactNode;
   isLoading?: boolean;
 };
 
 function Body({
   stripped = true,
-  animateRows = false,
   children,
   isLoading,
   ...props

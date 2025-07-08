@@ -1,6 +1,6 @@
 import React from "react";
 import { HTMLStyledProps } from "styled-system/types";
-import { Table } from "../../styled/table";
+import { Table, ScrollContainer } from "../../styled/table";
 import { DataTableContext, useColumnSizeVars, useTableContext } from "./hooks";
 import { Table as TableType } from "@tanstack/react-table";
 
@@ -38,4 +38,4 @@ function Root({ children, ...props }: DataTableRootProps) {
   );
 }
 
-export { Provider, Root };
+export { Provider, Root, ScrollContainer };
