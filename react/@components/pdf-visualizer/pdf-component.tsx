@@ -4,16 +4,17 @@ import { Document, Page } from "react-pdf";
 import { useEffect, useState } from "react";
 import { Box, Flex } from "styled-system/jsx";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
-import { Button } from "../button";
-import { Skeleton } from "../loadings/skeleton";
 import "react-pdf/dist/Page/TextLayer.css";
 import { css } from "styled-system/css";
-import { Text } from "../text";
 import { PDFViewerProps } from "./type";
+import { Button } from "../button";
+import { Skeleton } from "../loadings/skeleton";
+import { Text } from "@/components/ui/text";
 
 // pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/legacy/build/pdf.worker.js", import.meta.url).toString();
 // pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.js";
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+// pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";  // VERSÃO ANTERIOR 27/03
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`; // NOTE: TEMP VERSION UNTIL PDFJS DIST IS UPDATED
 
 const LoadingText = () => {
   return (
@@ -54,14 +55,13 @@ const LoadingText = () => {
 };
 
 // NOTE: Precisa ser importado usando do next/dynamic para funcionar no SSR -> const PDFViewer = dynamic(() => import("@/components/pdf-viewer"), { ssr: false });
-// TODO: AO ATUALIZAR PARA NEXT 15 - REFATORAR BASEADO NAS RECOMENDAÇÕES EM https://www.npmjs.com/package/react-pdf
 /**
  * Componente para visualização de arquivos PDF
  * @param url URL do arquivo PDF
  * @description Precisa ser importado usando do next/dynamic para funcionar no SSR
  * @description Exemplo: const PDFViewer = dynamic(() => import("@/components/pdf-viewer"), { ssr: false });
  */
-export default function PDFViewer({
+export default function PDFViewerBase({
   url,
   mode,
   width,
@@ -211,124 +211,3 @@ export default function PDFViewer({
     </Flex>
   );
 }
-
-// "use client";
-// import { pdfjs } from "react-pdf";
-// import { Document, Page } from "react-pdf";
-// import { useEffect, useState } from "react";
-// import { Box, Flex } from "styled-system/jsx";
-// import { CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
-// import { Button } from "../button";
-// import { Skeleton } from "../loadings/skeleton";
-
-// pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/legacy/build/pdf.worker.js", import.meta.url).toString();
-// // pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.js";
-
-// type Props = {
-//   url: string;
-//   mode: "scroll" | "book";
-// };
-
-// // NOTE: Precisa ser importado usando do next/dynamic para funcionar no SSR -> const PDFViewer = dynamic(() => import("@/components/pdf-viewer"), { ssr: false });
-// /**
-//  * Componente para visualização de arquivos PDF
-//  * @param url URL do arquivo PDF
-//  * @description Precisa ser importado usando do next/dynamic para funcionar no SSR
-//  * @description Exemplo: const PDFViewer = dynamic(() => import("@/components/pdf-viewer"), { ssr: false });
-//  */
-// export default function PDFViewer({ url, mode }: Props) {
-//   const [numPages, setNumPages] = useState<number>(0);
-//   const [pageNumber, setPageNumber] = useState<number>(1);
-//   const [hasError, setHasError] = useState(false);
-
-//   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-//     setNumPages(numPages);
-//   }
-
-//   useEffect(() => {
-//     try {
-//       // Tente renderizar o componente PDF
-//       pdfjs.getDocument(url).promise.then(
-//         (pdf) => {
-//           setNumPages(pdf.numPages);
-//         },
-//         (error) => {
-//           console.error("Erro ao carregar PDF:", error);
-//           setHasError(true);
-//         },
-//       );
-//     } catch (error) {
-//       console.error("Erro ao renderizar PDF:", error);
-//       setHasError(true);
-//     }
-//   }, [url]);
-
-//   if (hasError) {
-//     return <iframe src={url} width="100%" height="1000px" title="PDF Viewer" style={{ border: "none" }} />;
-//   }
-
-//   return (
-//     <Box position="relative" overflowY="auto" overflowX="hidden" w="full" animation="fadeIn 0.3s ease">
-//       {numPages === 0 && <Skeleton h={1000} w="600px" />}
-//       <Document file={url} onLoadSuccess={onDocumentLoadSuccess} loading="Carregando arquivo...">
-//         {mode === "scroll" &&
-//           Array.from(new Array(numPages), (el, index) => (
-//             <Page
-//               key={`page_${index + 1}`}
-//               pageNumber={index + 1}
-//               renderTextLayer={false}
-//               renderAnnotationLayer={false}
-//               loading="Carregando página..."
-//             />
-//           ))}
-
-//         {mode === "book" && (
-//           <Page
-//             pageNumber={pageNumber}
-//             renderTextLayer={false}
-//             renderAnnotationLayer={false}
-//             height={1000}
-//             loading="Carregando página..."
-//           />
-//         )}
-//       </Document>
-//       {mode === "book" && (
-//         <Flex
-//           justify="space-between"
-//           position="absolute"
-//           w="fit"
-//           bottom={4}
-//           right="50%"
-//           translate="auto"
-//           translateX="50%"
-//           align="center"
-//           gap={2}
-//           shadow="md"
-//           rounded="lg"
-//         >
-//           <Button
-//             _hover={{ bg: "gray.2" }}
-//             variant="link"
-//             size="icon"
-//             onClick={() => setPageNumber((prev) => prev - 1)}
-//             disabled={pageNumber <= 1}
-//           >
-//             <CaretLeft size={24} />
-//           </Button>
-//           <p>
-//             {pageNumber} de {numPages}
-//           </p>
-//           <Button
-//             _hover={{ bg: "gray.2" }}
-//             variant="link"
-//             size="icon"
-//             onClick={() => setPageNumber((prev) => prev + 1)}
-//             disabled={pageNumber >= numPages}
-//           >
-//             <CaretRight size={24} />
-//           </Button>
-//         </Flex>
-//       )}
-//     </Box>
-//   );
-// }
