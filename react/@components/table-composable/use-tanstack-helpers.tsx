@@ -1,8 +1,8 @@
 import { Cell, flexRender, Header, Table } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { getCommonPinningStyles } from "./parts/helpers";
+import { getCommonPinningStyles } from './smart-table/parts/helpers';
 import { HTMLStyledProps } from "styled-system/types";
-import { TableResizer } from "../styled/table";
+import { TableResizer } from './basic/styled';
 
 type UseTableHelperReturn = {
   tableProps: React.HTMLAttributes<HTMLTableElement>;

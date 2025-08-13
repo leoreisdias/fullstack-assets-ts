@@ -11,6 +11,7 @@ export const tableContainer = defineRecipe({
 
 export const tableRoot = defineRecipe({
   className: "table",
+  jsx: ["Table.Root"],
   description: "Styles for the Table component",
   base: {
     w: "full",
@@ -32,7 +33,7 @@ export const tableHeader = defineRecipe({
   base: {
     "& tr": {
       borderBottom: "1px solid",
-      borderColor: "bg.muted/50",
+      borderColor: "bg.muted",
     },
     bg: "bg.muted/50",
   },
@@ -76,10 +77,6 @@ export const tableRow = defineRecipe({
     borderBottom: "1px solid",
     borderColor: "border.muted",
     transition: "colors",
-
-    "&:not(thead > tr):hover": {
-      bg: "bg.muted/50",
-    },
 
     "&[data-state=selected]": {
       bg: "bg.muted/100",
