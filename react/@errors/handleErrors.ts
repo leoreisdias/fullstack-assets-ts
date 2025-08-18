@@ -79,3 +79,34 @@ export const handleError = (
     ok: false,
   };
 };
+
+
+export class HttpError<E = unknown> extends Error {
+  status: number;
+  payload?: E;
+  constructor(message: string, opts: { status: number; payload?: E }) {
+    super(message);
+    this.name = "HttpError";
+    this.status = opts.status;
+    this.payload = opts.payload;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status: this.status,
+      payload: this.payload,
+    };
+  }
+}
+
+export function isHttpError<E = unknown>(e: unknown): e is HttpError<E> {
+  return (
+    !!e &&
+    typeof e === "object" &&
+    "name" in e &&
+    "status" in e &&
+    (e as any).name === "HttpError"
+  );
+}
