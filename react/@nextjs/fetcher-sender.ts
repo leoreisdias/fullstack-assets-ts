@@ -1,30 +1,24 @@
+'use server';
+
 import axios, { AxiosRequestConfig } from "axios";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { Result } from "../@types/response";
-import { handleError } from "./errors/handleErrors";
+import { HttpError } from "../@errors/error-helper";
 
-type FetcherRequestInit<W> = RequestInit & {
-  fallbackData?: W;
+type InitProps = RequestInit & { params?: Record<string, string> }
+
+const convertObjToQueryString = (obj: Record<string, string>) => {
+  return Object.entries(obj)
+    .filter(([_, value]) => value !== undefined && value !== null)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
 };
-
-export function fetcher<T = unknown>(
-  input: RequestInfo,
-  init: FetcherRequestInit<T> & { fallbackData: T }
-): Promise<T>;
-
-// Sobrecarga para quando o fallbackData não é fornecido (retorno padrão de erro TResponse<null>)
-
-export function fetcher<T = unknown>(
-  input: RequestInfo,
-  init?: FetcherRequestInit<T>
-): Promise<Result<null> | Result<T>>;
 
 export async function fetcher<T = unknown>(
   input: RequestInfo,
-  init?: FetcherRequestInit<T>
-): Promise<Result<null> | Result<T>> {
+  init?: InitProps
+): Promise<T> {
   // NOTE: NEXT-AUTH SESSION EXAMPLE - You can adapt to a different token approach
   // const apiToken =
   //   (await cookies()).get("authjs.session-token")?.value ||
@@ -36,7 +30,7 @@ export async function fetcher<T = unknown>(
 
 
   const res = await tryCatch<Response>(
-    fetch(`${baseUrl}${input}`, {
+    fetch(`${baseUrl}${input}${convertObjToQueryString(init?.params ?? {})}`, {
       ...init,
       headers: {
         // Authorization: `Bearer ${apiToken}`,
@@ -49,14 +43,14 @@ export async function fetcher<T = unknown>(
     console.error("fetcher:url:", input, "init:", init, "res:", res);
 
     if (res.statusCode === 401) {
-      return redirect("/sign-out");
+      // return Your sign-out fallback
     }
   }
 
   try {
     const data = await res.payload?.json();
 
-    return data as Result<T>;
+    return data as T;
   } catch (err) {
     console.error(
       "fetcher:url:",
@@ -67,7 +61,7 @@ export async function fetcher<T = unknown>(
       res,
       err
     );
-    return handleError(err) as Result<T>;
+    throw HttpError.fromUnknown(err);
   }
 }
 
@@ -103,43 +97,20 @@ export const sender = async <T = unknown>(
 
   if (!response.ok) {
     if (response.statusCode === 401) {
-      // Handle unauthorized response by redirecting the user.
-      // Option 1: Redirect with internationalization support
-      // const cookiesStore = cookies();
-      // const locale = cookiesStore.get('NEXT_LOCALE');
-      // return redirect(`/${locale?.value || 'pt'}/sign-out`);
-
-      // Option 2: Simple redirect to the home page
-      // return redirect("/");
-      return redirect("/");
+      // return Your sign-out logic
     }
-
-    return response;
   }
-
-  return {
-    ...response,
-    payload: response.payload?.data,
-  };
+  
+  return response.data;
 };
 
-export async function tryCatch<T = Result, E = Error>(
+export async function tryCatch<T = any>(
   promise: Promise<T>
-): Promise<Result<T, E>> {
+): Promise<T> {
   try {
     const data = await promise;
-    return { payload: data, error: null, ok: true, message: "" };
+    return data as T;
   } catch (error) {
-    return handleError(error) as Result<T, E>;
+    throw HttpError.fromUnknown(error);
   }
 }
-
-// NOTE: USE THIS FOR CLIENT SIDE FETCHES SUCH IN _queryFn_ from _useQuery_ hook (Tanstack Query)
-export const clientFetcher = async <T = any>(url: string, config?: AxiosRequestConfig<T> | undefined) => {
-  const res = await api.get<Result<T>>(url, {
-    baseURL: "/api/internal",
-    ...config,
-  });
-
-  return res?.data;
-};

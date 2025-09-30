@@ -2,22 +2,24 @@ import axios from "axios";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { env } from "@/app/env";
-import { auth } from "@/auth";
+const getUserAgent = () => {
+  const header = headers();
+  const userAgent = header.get("user-agent");
+
+  return userAgent;
+}
 
 // CLIENT SIDE GETS HERE AND THEN IN YOUR API
 // WHY? REASON: IN THIS APPROCH YOU KEEP YOUR ENVs AS SERVER-ONLY AVOIDING THE NEED OF A PER ENVIRONMENT DEPLOY SCRIPT
 export async function GET(request: Request) {
-  const session = await auth(); // NEXT-AUTH SESSION APPROACH EXAMPLE
-  const token = session?.user.accessToken;
+  const token = ""; // Get your token from cookies/third party libs/other...
 
-  const header = headers();
-  const apiEndpoint = request.url.split("/api-front/my-api")[1];
-
-  const userAgent = header.get("user-agent");
+  const apiEndpoint = request.url.split("/api/proxy-api-example")[1];
+  
+  const userAgent = getUserAgent();
 
   const { data } = await axios.get(apiEndpoint, {
-    baseURL: env.USERS_BASE_URL,
+    baseURL: process.env.USERS_BASE_URL,
     headers: {
       userAgent, // IF YOU NEED TO STORE USER AGENT DATA
       Authorization: `Bearer ${token}`,
