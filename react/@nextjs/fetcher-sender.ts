@@ -8,10 +8,22 @@ import { HttpError } from "../@errors/error-helper";
 
 type InitProps = RequestInit & { params?: Record<string, string> }
 
-const convertObjToQueryString = (obj: Record<string, string>) => {
+const convertObjToQueryString = (obj: Record<string, any>) => {
   return Object.entries(obj)
     .filter(([_, value]) => value !== undefined && value !== null)
-    .map(([key, value]) => `${key}=${value}`)
+    .map(([key, value]) => {
+      let valueToUse = value;
+
+      if (typeof value === "object") {
+        valueToUse = JSON.stringify(value);
+      }
+
+      if (value instanceof Date) {
+        valueToUse = value.toISOString();
+      }
+
+      return `${key}=${valueToUse}`;
+    })
     .join("&");
 };
 
