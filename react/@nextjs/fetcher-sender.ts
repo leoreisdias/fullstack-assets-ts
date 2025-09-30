@@ -30,7 +30,7 @@ export async function fetcher<T = unknown>(
 
 
   const res = await tryCatch<Response>(
-    fetch(`${baseUrl}${input}${convertObjToQueryString(init?.params ?? {})}`, {
+    fetch(`${baseUrl}${input}?${convertObjToQueryString(init?.params ?? {})}`, {
       ...init,
       headers: {
         // Authorization: `Bearer ${apiToken}`,
