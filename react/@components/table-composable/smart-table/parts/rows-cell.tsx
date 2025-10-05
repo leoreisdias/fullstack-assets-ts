@@ -71,7 +71,7 @@ const BodyRowComponent = ({
             transition: {
               duration: 0.1,
               delay: visibleRowIndex * 0.1,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }),
           exit: () => ({
@@ -80,7 +80,7 @@ const BodyRowComponent = ({
             transition: {
               duration: 0.2,
               delay: visibleRowIndex * 0.1,
-              ease: "easeInOut",
+              ease: "easeOut",
             },
           }),
         }}
