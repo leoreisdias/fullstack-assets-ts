@@ -99,15 +99,58 @@ export class HttpError<E = unknown> extends Error {
   }
 }
 
+
 export function isHttpError<E = unknown>(e: unknown): e is HttpError<E> {
-  return (
-    e instanceof HttpError ||
-    (!!e &&
-      typeof e === "object" &&
-      "name" in e &&
-      "status" in e &&
-      "timestamp" in e &&
-      (e as any).name === "HttpError" &&
-      typeof (e as any).status === "number")
-  );
+  return e instanceof HttpError;
 }
+
+/**
+ * DX: Converts ANY error to HttpError automatically
+ * Use this in onError callbacks - it handles everything
+ */
+export function asHttpError(error: unknown): HttpError {
+  if (error instanceof HttpError) {
+    return error;
+  }
+
+  // If it's a serialized HttpError from server actions, reconstruct it
+  if (error && typeof error === "object") {
+    const errorObj = error as any;
+
+    if (errorObj.name === "HttpError" && typeof errorObj.status === "number" && typeof errorObj.message === "string") {
+      return new HttpError(errorObj.message, {
+        status: errorObj.status,
+        payload: errorObj.payload,
+      });
+    }
+  }
+
+  // For everything else, use fromUnknown
+  return HttpError.fromUnknown(error);
+}
+
+/* USAGE EXAMPLE IN SERVER FUNCTIONS 
+```
+'use server'
+
+export const doSomething = async (body) => {
+  try {
+    const { data } = await api.post('', body)
+
+    return data;
+  } catch (error) {
+    throw HttpError.fromUnknown(error); -> Auto extract from API
+  }
+};
+
+```
+*/
+
+/* USAGE EXAMPLE IN useMutations 
+```
+ onError: (error) => {
+    const httpError = asHttpError(error);
+    toast.error(httpError.getUserMessage());
+},
+```
+*/
