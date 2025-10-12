@@ -33,7 +33,7 @@ type DataTableRef = {
   getTable: <T = any>() => Table<T>;
 };
 
-function useTableFilter<T = any>(table?: Table<T>) {
+function useTableFilter<T = any>(table?: Table<T>, options?: { sorting: boolean }) {
   const ref = useRef<DataTableRef | null>(null);
 
   // Criar a função de callback estável
@@ -43,6 +43,8 @@ function useTableFilter<T = any>(table?: Table<T>) {
 
       tableApi?.getColumn(columnId as string)?.setFilterValue(value);
 
+      if(!options?.sorting) return;
+      
       // ativa/desativa a ordenação
       if (value) {
         tableApi?.setSorting([{ id: columnId as string, desc: false }]);
@@ -50,7 +52,7 @@ function useTableFilter<T = any>(table?: Table<T>) {
         tableApi?.setSorting([]);
       }
     },
-    [table]
+    [table, options?.sorting]
   );
 
   // Aplicar debounce à função estável
