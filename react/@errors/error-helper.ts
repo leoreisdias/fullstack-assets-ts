@@ -37,7 +37,7 @@ export class HttpError<E = unknown> extends Error {
    * Automatically extracts messages from API responses, Axios errors, etc.
    */
   static fromUnknown(error: unknown, fallbackStatus = 500): HttpError {
-    if (error instanceof HttpError) {
+    if (isHttpError(error)) {
       return error;
     }
 
@@ -109,7 +109,7 @@ export function isHttpError<E = unknown>(e: unknown): e is HttpError<E> {
  * Use this in onError callbacks - it handles everything
  */
 export function asHttpError(error: unknown): HttpError {
-  if (error instanceof HttpError) {
+  if (isHttpError(error)) {
     return error;
   }
 
