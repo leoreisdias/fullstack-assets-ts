@@ -47,7 +47,7 @@ export class HttpError<E = unknown> extends Error {
 
 
     // Handle Axios errors specifically
-    if (error instanceof AxiosError) {
+    if (axios.isAxiosError(error)) {
       message = error.response?.data?.message || defaultErrorMessage;
       payload = error.response?.data?.payload || null;
       status = error.response?.status || fallbackStatus;
