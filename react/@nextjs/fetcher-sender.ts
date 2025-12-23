@@ -5,6 +5,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { HttpError } from "../@errors/error-helper";
+import { tryCatch } from "../../isomorphic/functions/try-catch";
 
 type InitProps = RequestInit & { params?: Record<string, string> }
 
@@ -116,13 +117,31 @@ export const sender = async <T = unknown>(
   return response.data;
 };
 
-export async function tryCatch<T = any>(
-  promise: Promise<T>
-): Promise<T> {
-  try {
-    const data = await promise;
-    return data as T;
-  } catch (error) {
-    throw HttpError.fromUnknown(error);
-  }
+export function createServerFetcher(baseURL?: string): AxiosInstance {
+  const serverBaseURL = baseURL || process.env.API_URI;
+
+  const agent = {
+    http: new http.Agent({
+      keepAlive: true,
+      maxSockets: 50,
+      maxFreeSockets: 10,
+      timeout: 60000,
+    }),
+    https: new https.Agent({
+      keepAlive: true,
+      maxSockets: 50,
+      maxFreeSockets: 10,
+      timeout: 60000,
+    }),
+  };
+
+  const client = axios.create({
+    baseURL: serverBaseURL,
+    timeout: 60000,
+    maxRedirects: 0, // disable automatic redirects
+    httpAgent: agent.http,
+    httpsAgent: agent.https,
+  });
+
+  return client;
 }
