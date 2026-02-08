@@ -1,3 +1,6 @@
+# NOTE
+This was my first composable table abstraction, created before I adopted registry-based solutions like KiboUI. It solved real production problems and shaped how I evaluate table architecture today.
+
 # TanStack Table Tricks: Composable vs. Smart Tables
 
 This directory contains two distinct approaches to building tables with TanStack Table: a basic, style-focused composable table (`TableBase`) and a more intelligent, feature-rich composable table (`SmartTable`).
